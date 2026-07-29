@@ -23,6 +23,19 @@ const page = await browser.newPage();
 await page.setViewport({ width: 1440, height: 900 });
 await page.goto(url, { waitUntil: 'networkidle0' });
 
+// Scroll-triggered reveal animations only fire once sections enter the
+// viewport, so walk the page top to bottom before capturing.
+await page.evaluate(async () => {
+  const distance = window.innerHeight;
+  const delay = 120;
+  while (window.scrollY + window.innerHeight < document.body.scrollHeight) {
+    window.scrollBy(0, distance);
+    await new Promise((r) => setTimeout(r, delay));
+  }
+  window.scrollTo(0, 0);
+  await new Promise((r) => setTimeout(r, 300));
+});
+
 const n = nextIndex();
 const fileName = `screenshot-${n}${label ? `-${label}` : ''}.png`;
 const outPath = path.join(outDir, fileName);
