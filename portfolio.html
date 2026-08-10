@@ -296,15 +296,21 @@
     z-index: 1;
   }
   .tl-row:not(.right) .tl-card { grid-column: 1; padding-right: 2rem; }
-  .tl-row:not(.right) .tl-spacer { grid-column: 3; }
+  .tl-row:not(.right) .tl-spacer { grid-column: 3; align-items: flex-start; }
   .tl-row.right .tl-card { grid-column: 3; padding-left: 2rem; }
-  .tl-row.right .tl-spacer { grid-column: 1; }
+  .tl-row.right .tl-spacer { grid-column: 1; align-items: flex-end; }
+  .tl-spacer { display: flex; flex-direction: column; gap: .6rem; align-self: center; }
+  .tl-spacer .award-badge { margin-top: 0; }
   @media (max-width: 760px) {
     .timeline::before { left: 7px; }
     .tl-row { grid-template-columns: 16px 1fr; column-gap: 1rem; }
     .tl-row .dot { grid-column: 1; grid-row: 1; justify-self: start; margin-top: 22px; }
     .tl-row:not(.right) .tl-card, .tl-row.right .tl-card { grid-column: 2; grid-row: 1; padding: 0; }
     .tl-row:not(.right) .tl-spacer, .tl-row.right .tl-spacer { display: none; }
+    .tl-row .tl-spacer.tl-spacer--awards {
+      display: flex; flex-direction: row; flex-wrap: wrap; align-items: flex-start;
+      grid-column: 2; grid-row: 2; align-self: start; margin-top: .6rem;
+    }
   }
   .tl-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 12px; padding: 1.6rem 1.8rem; box-shadow: var(--shadow); }
   .tl-head { display: flex; align-items: flex-start; gap: .9rem; margin-bottom: .9rem; }
@@ -411,7 +417,7 @@
   .skill-card p { color: var(--ink-soft); margin: 0; font-size: 14.5px; }
 
   /* Education */
-  .edu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
+  .edu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.3rem; max-width: 720px; margin: 0 auto; }
   @media (max-width: 860px) { .edu-grid { grid-template-columns: 1fr; } }
   .edu-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 12px; padding: 1.6rem; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: center; }
   .edu-card .fi { width: 34px; height: 34px; border-radius: 8px; background: var(--accent-tint); color: var(--accent-strong); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
@@ -659,16 +665,26 @@
             <li>Coverage tracking across a 3-tier manager hierarchy</li>
           </ul>
           <p>Every data boundary is enforced at the database layer via Postgres row-level security, rather than client-side checks.</p>
+        </div>
+        <div class="dot"></div>
+        <div class="tl-spacer tl-spacer--awards">
           <div class="award-badge">
             <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
             In Closed Testing &mdash; Pre-Launch on Google Play
           </div>
         </div>
-        <div class="dot"></div>
-        <div class="tl-spacer"></div>
       </div>
       <div class="tl-row right">
-        <div class="tl-spacer"></div>
+        <div class="tl-spacer tl-spacer--awards">
+          <div class="award-badge">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5"/><path d="M17 6h3a3 3 0 0 1-3 5"/></svg>
+            Everest Group Pinnacle Award (2025) &mdash; Agentic AI Product Strategy
+          </div>
+          <div class="award-badge">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5"/><path d="M17 6h3a3 3 0 0 1-3 5"/></svg>
+            Everest Group 15th Annual Awards &mdash; Best Client Retention
+          </div>
+        </div>
         <div class="dot"></div>
         <div class="tl-card">
           <div class="tl-head">
@@ -685,14 +701,6 @@
             <li>Designed the Total Value Assessment framework, now a reusable standard across 10+ enterprise clients</li>
             <li>Grew and mentored a high-performing analyst team, cutting time-to-promotion from 2.5 to ~1.5 years</li>
           </ul>
-          <div class="award-badge">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5"/><path d="M17 6h3a3 3 0 0 1-3 5"/></svg>
-            Everest Group Pinnacle Award (2025) &mdash; Agentic AI Product Strategy
-          </div>
-          <div class="award-badge">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5"/><path d="M17 6h3a3 3 0 0 1-3 5"/></svg>
-            Everest Group 15th Annual Awards &mdash; Best Client Retention
-          </div>
         </div>
       </div>
       <div class="tl-row">
@@ -714,7 +722,12 @@
         <div class="tl-spacer"></div>
       </div>
       <div class="tl-row right">
-        <div class="tl-spacer"></div>
+        <div class="tl-spacer tl-spacer--awards">
+          <div class="award-badge">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5"/><path d="M17 6h3a3 3 0 0 1-3 5"/></svg>
+            TechM ACE Award &mdash; Engineering Excellence
+          </div>
+        </div>
         <div class="dot"></div>
         <div class="tl-card">
           <div class="tl-head">
@@ -728,10 +741,6 @@
             <li>Built a Java/Selenium automation solution that eliminated ~120 hours of manual testing per week</li>
             <li>Shipped 16+ application enhancements and .NET tools that lifted field-workforce productivity by 45%</li>
           </ul>
-          <div class="award-badge">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5"/><path d="M17 6h3a3 3 0 0 1-3 5"/></svg>
-            TechM ACE Award &mdash; Engineering Excellence
-          </div>
         </div>
       </div>
     </div>
@@ -812,7 +821,7 @@
   <div class="wrap">
     <span class="sec-eyebrow label">EDUCATION</span>
     <h2 class="sec-title">Education</h2>
-    <p class="sec-sub">Academic background and certifications.</p>
+    <p class="sec-sub">Academic background.</p>
     <div class="edu-grid">
       <div class="edu-card">
         <div class="fi"><svg class="icon" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div>
@@ -825,15 +834,6 @@
         <h3>B.E., Electrical &amp; Electronics Engineering</h3>
         <div class="inst">Krishna Institute of Engineering &amp; Technology, India</div>
         <div class="yr">2012 &ndash; 2016</div>
-      </div>
-      <div class="edu-card">
-        <div class="fi"><svg class="icon" viewBox="0 0 24 24"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M8.5 13.5L7 21l5-2 5 2-1.5-7.5"/></svg></div>
-        <h3>Certifications</h3>
-        <ul>
-          <li>AI Governance &mdash; University of Oxford (Coursera), 2025</li>
-          <li>Generative AI Leader &mdash; Google Cloud, 2026</li>
-          <li>AI Governance Fundamentals &mdash; Securiti Education, 2025</li>
-        </ul>
       </div>
     </div>
   </div>
