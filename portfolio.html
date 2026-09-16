@@ -415,6 +415,14 @@
   .skill-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 12px; padding: clamp(1.6rem, 3vw, 2rem); box-shadow: var(--shadow); }
   .skill-card h3 { font-family: "Inter", sans-serif; font-weight: 700; font-size: 17px; margin: 0 0 .7rem; }
   .skill-card p { color: var(--ink-soft); margin: 0; font-size: 14.5px; }
+  .skills-subhead { display: block; margin: 2.4rem 0 1rem; }
+  .skills-subhead:first-of-type { margin-top: 0; }
+  .skills-grid--core { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 860px) { .skills-grid--core { grid-template-columns: 1fr; } }
+  .tool-row { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .tool-row + .tool-row { margin-top: 1rem; }
+  .tool-label { font-size: 13px; font-weight: 600; color: var(--ink); flex: 0 0 152px; }
+  @media (max-width: 560px) { .tool-label { flex-basis: 100%; } }
 
   /* Education */
   .edu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.3rem; max-width: 720px; margin: 0 auto; }
@@ -624,18 +632,68 @@
     <span class="sec-eyebrow label">EXPERTISE</span>
     <h2 class="sec-title">Skills &amp; Tools</h2>
     <p class="sec-sub">Where I focus, and what I use to get there.</p>
-    <div class="skills-grid">
+    <h4 class="label skills-subhead">Core Capabilities</h4>
+    <div class="skills-grid skills-grid--core">
       <div class="skill-card">
-        <h3>What I Do</h3>
-        <p>AI and automation strategy, use-case prioritisation, ROI modelling and responsible AI governance, much of it applied to finance and F&amp;A operations. Moving leadership teams from ad-hoc experiments to structured, funded adoption.</p>
+        <h3>AI &amp; Automation Strategy</h3>
+        <p>Turning scattered AI interest into a prioritised, costed roadmap. Use-case discovery, value-versus-feasibility scoring, and a sequenced adoption plan leadership can fund.</p>
       </div>
       <div class="skill-card">
-        <h3>Frameworks &amp; Tools</h3>
-        <p>Total Value Assessment for ROI and benefit realisation, AI maturity and data-readiness assessments, and responsible AI governance against the EU AI Act and NIST AI RMF. Hands-on with Python, SQL, Azure AI Foundry, n8n, Power BI, React Native and Supabase.</p>
+        <h3>Total Value Assessment &amp; ROI Modelling</h3>
+        <p>Building the business case that gets budget approved &mdash; and the tracking that proves it landed. Baseline costing, hard and soft benefit modelling, and post-deployment benefit realisation.</p>
       </div>
       <div class="skill-card">
-        <h3>Industries</h3>
-        <p>Banking and financial services, manufacturing, payments and private equity through enterprise advisory. Hands-on delivery for pharmaceutical and hospitality clients.</p>
+        <h3>Responsible AI Governance</h3>
+        <p>Making adoption defensible before it scales. Risk classification against the EU AI Act, control design mapped to NIST AI RMF, and governance operating models that hold up under audit.</p>
+      </div>
+      <div class="skill-card">
+        <h3>Finance &amp; F&amp;A Operations</h3>
+        <p>Where most of this gets applied. Opportunity sizing across P2P, O2C and R2R, automation design, and controls that keep finance and audit comfortable signing off.</p>
+      </div>
+    </div>
+
+    <h4 class="label skills-subhead">Methodologies &amp; Frameworks</h4>
+    <div class="panel">
+      <div class="pill-tags">
+        <span class="pill">Total Value Assessment (TVA)</span>
+        <span class="pill">AI maturity assessment</span>
+        <span class="pill">Data-readiness assessment</span>
+        <span class="pill">Use-case prioritisation (value vs. feasibility)</span>
+        <span class="pill">Benefit realisation tracking</span>
+        <span class="pill">EU AI Act risk classification</span>
+        <span class="pill">NIST AI RMF</span>
+      </div>
+    </div>
+
+    <h4 class="label skills-subhead">Tools</h4>
+    <div class="panel">
+      <div class="tool-row">
+        <span class="tool-label">Data &amp; Analytics</span>
+        <div class="pill-tags"><span class="pill">Python</span><span class="pill">SQL</span><span class="pill">Power BI</span></div>
+      </div>
+      <div class="tool-row">
+        <span class="tool-label">AI Platforms</span>
+        <div class="pill-tags"><span class="pill">Azure AI Foundry</span></div>
+      </div>
+      <div class="tool-row">
+        <span class="tool-label">Automation</span>
+        <div class="pill-tags"><span class="pill">n8n</span></div>
+      </div>
+      <div class="tool-row">
+        <span class="tool-label">Application Build</span>
+        <div class="pill-tags"><span class="pill">React Native</span><span class="pill">Supabase</span></div>
+      </div>
+    </div>
+
+    <h4 class="label skills-subhead">Industries</h4>
+    <div class="panel">
+      <div class="pill-tags">
+        <span class="pill">Banking &amp; financial services</span>
+        <span class="pill">Manufacturing</span>
+        <span class="pill">Payments</span>
+        <span class="pill">Private equity</span>
+        <span class="pill">Pharmaceutical</span>
+        <span class="pill">Hospitality</span>
       </div>
     </div>
   </div>
