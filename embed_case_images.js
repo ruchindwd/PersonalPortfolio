@@ -14,6 +14,8 @@ const map = {
   '__FINANCE_IMG__': dataUri('finance.jpg'),
   '__ANALYTICS_IMG__': dataUri('analytics.jpg'),
   '__PAYMENTS_IMG__': dataUri('payments.jpg'),
+  '__HOSPITALITY_IMG__': dataUri('hospitality.jpg'),
+  '__PHARMA_IMG__': dataUri('pharma.jpg'),
 };
 
 let html = fs.readFileSync(htmlPath, 'utf8');
