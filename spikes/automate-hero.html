@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype · Ruchin Dwivedi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&family=Kalam:wght@700&display=swap" rel="stylesheet">
+<style>
+/* THROWAWAY SPIKE v3 — rebuilt to the reference's UX standard. Not production code. */
+:root{
+  --white:#FFFFFF; --ink:#15171A; --muted:#5B5F66; --stone:#E6E4DF; --stone-soft:#F5F4F1; --stone-faint:#EFEDE8;
+  --accent:#E05A2B; --accent-deep:#B33F17; --accent-tint:#FCE9E1; --accent-wash:#FFF5F0;
+  --display:'Bricolage Grotesque', 'DM Sans', system-ui, sans-serif;
+  --sans:'DM Sans', system-ui, -apple-system, sans-serif;
+  --hand:'Kalam', 'Comic Sans MS', cursive;
+  --nav-h:72px; --max:1180px;
+  --ease:cubic-bezier(.22,.8,.3,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --sh-1:0 1px 2px rgba(21,23,26,.06);
+  --sh-2:0 12px 32px rgba(21,23,26,.10);
+  --sh-3:0 2px 4px rgba(21,23,26,.04), 0 24px 48px -16px rgba(179,63,23,.25);
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html{scroll-behavior:smooth; scroll-padding-top:var(--nav-h)}
+body{font-family:var(--sans); font-size:16px; line-height:1.5; color:var(--ink); background:var(--white); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+img{display:block; max-width:100%}
+a{color:inherit}
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{outline:3px solid var(--accent); outline-offset:3px}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ---------- primitives ---------- */
+.inner{width:100%; max-width:var(--max); margin:0 auto; padding:80px 24px}
+.fold{display:flex; flex-direction:column; justify-content:center; min-height:calc(100svh - var(--nav-h))}
+.eyebrow{display:flex; align-items:center; gap:24px; margin-bottom:56px; font-weight:600; font-size:13px; line-height:1.3; letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
+.eyebrow::after{content:""; flex:1; height:1px; background:var(--stone)}
+.h-display{font-family:var(--display); font-weight:800; letter-spacing:-.035em; line-height:.98}
+.h-section{font-family:var(--display); font-weight:700; font-size:clamp(28px, 3.2vw, 40px); line-height:1.08; letter-spacing:-.025em}
+.hand{font-family:var(--hand); font-weight:700; color:var(--accent); white-space:nowrap; letter-spacing:0}
+.pill{display:inline-flex; align-items:center; gap:10px; border:1px solid var(--stone); border-radius:999px; padding:7px 16px; font-weight:500; font-size:14px; line-height:1.4; color:var(--muted); background:var(--white)}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--accent); position:relative; flex:none}
+.dot::after{content:""; position:absolute; inset:0; border-radius:50%; background:var(--accent); animation:ping 2.4s var(--ease) infinite}
+@keyframes ping{from{transform:scale(1); opacity:.5} to{transform:scale(2.6); opacity:0}}
+.squiggle{box-decoration-break:clone; -webkit-box-decoration-break:clone; padding-bottom:6px; background-repeat:repeat-x; background-position:0 100%; background-size:56px 8px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='8' viewBox='0 0 56 8'%3E%3Cpath d='M0 4.5C5 1.5 9 1.5 14 4.5S23 7.5 28 4.5 37 1.5 42 4.5 51 7.5 56 4.5' fill='none' stroke='%23E05A2B' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E")}
+.squiggle.light{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='8' viewBox='0 0 56 8'%3E%3Cpath d='M0 4.5C5 1.5 9 1.5 14 4.5S23 7.5 28 4.5 37 1.5 42 4.5 51 7.5 56 4.5' fill='none' stroke='white' stroke-opacity='.85' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E")}
+
+/* buttons: hover/active via transform + opacity only */
+.btn{position:relative; isolation:isolate; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer; text-decoration:none; border-radius:999px;
+  font:600 15px/1.5 var(--sans); padding:11px 20px; transition:transform .2s var(--ease)}
+.btn::after{content:""; position:absolute; inset:0; border-radius:inherit; z-index:-1; opacity:0; transition:opacity .2s var(--ease)}
+.btn:hover{transform:translateY(-1px)}
+.btn:hover::after{opacity:1}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn-accent{background:var(--accent); color:#fff}
+.btn-accent::after{background:var(--accent-deep)}
+.btn-ink{background:var(--ink); color:#fff}
+.btn-ink::after{background:#000}
+.btn-outline{background:transparent; color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink); padding:13px 24px; font-size:16px}
+.btn-outline::after{background:var(--accent-wash)}
+.btn-lg{padding:14px 24px; font-size:16px}
+.link{font-weight:600; color:var(--ink); text-decoration:none; border-bottom:1.5px solid var(--ink); display:inline-block; transition:transform .2s var(--ease), opacity .2s}
+.link:hover{transform:translateY(-1px); opacity:.75}
+.link:active{transform:translateY(0)}
+
+/* scroll reveal */
+.rv{opacity:0; transform:translateY(14px); transition:opacity .6s var(--ease) var(--rvd,0s), transform .7s var(--ease) var(--rvd,0s)}
+.rv.in{opacity:1; transform:none}
+
+/* ---------- nav ---------- */
+.nav{position:sticky; top:0; z-index:50; height:var(--nav-h); background:rgba(255,255,255,.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--stone)}
+.nav .inner{height:100%; padding:0 24px; display:flex; align-items:center; justify-content:space-between}
+.brand{font-family:var(--display); font-weight:800; font-size:19px; letter-spacing:-.02em; text-decoration:none; border-radius:6px}
+.nav-links{display:flex; align-items:center; gap:28px}
+.nav-link{font-weight:500; font-size:15px; color:var(--muted); text-decoration:none; border-radius:6px; transition:transform .2s var(--ease), opacity .2s}
+.nav-link:hover{transform:translateY(-1px); color:var(--ink)}
+.nav-link:active{transform:translateY(0)}
+@media (max-width:760px){ .nav-link{display:none} }
+
+/* ---------- hero ---------- */
+.hero{border-bottom:1px solid var(--stone); overflow:hidden}
+.hero .inner{padding:48px 24px 0; display:flex; flex-direction:column; align-items:center; gap:12px; flex:1; max-width:1240px}
+.greet-wrap{position:relative; display:inline-block; padding:4px 10px; overflow:hidden}
+.greet{font:700 44px/1.1 var(--hand); color:var(--accent)}
+.greet-cover{position:absolute; inset:0; background:var(--white); transform-origin:right center; animation:wipe .9s var(--ease) .25s both}
+@keyframes wipe{from{transform:scaleX(1)} to{transform:scaleX(0)}}
+.fade{animation:fade-in .7s var(--ease) both}
+@keyframes fade-in{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+.hero-grid{width:100%; flex:1; display:grid; grid-template-columns:minmax(0,1fr) 420px minmax(0,1fr); align-items:end; column-gap:24px; margin-top:16px}
+.word{align-self:center; position:relative; display:flex; flex-direction:column; gap:16px; padding:32px 20px; border-radius:24px; text-decoration:none; color:inherit}
+.word::before{content:""; position:absolute; inset:0; border-radius:inherit; background:var(--accent-wash); opacity:0; transition:opacity .25s var(--ease)}
+.word > *{position:relative}
+.word:hover::before{opacity:1}
+.word.l{text-align:right; align-items:flex-end}
+.word.r{text-align:left; align-items:flex-start}
+.word h2{font-size:clamp(44px, 4.6vw, 66px)}
+.word p{font-size:17px; line-height:1.65; color:var(--muted); max-width:24ch}
+.portrait{position:relative; width:420px; height:540px; align-self:end; padding:0 20px}
+.xs-hide{display:inline}
+@media (max-width:480px){ .xs-hide{display:none} }
+.portrait::before{content:""; position:absolute; left:44px; right:-4px; top:36px; bottom:-18px; border-radius:44px; background:var(--accent-tint); transform:rotate(-4deg)}
+.portrait::after{content:""; position:absolute; left:0; right:40px; top:70px; bottom:8px; border-radius:44px; background:var(--stone-soft); transform:rotate(3deg)}
+.portrait img{position:relative; z-index:1; width:100%; height:100%; object-fit:cover; object-position:50% 15%; border-radius:40px 40px 0 0; box-shadow:var(--sh-2)}
+@media (max-width:1023px){
+  .hero .inner{gap:10px}
+  .hero-grid{grid-template-columns:1fr; justify-items:center; row-gap:0; margin-top:8px}
+  .portrait{order:-1; width:300px; height:360px; margin-bottom:8px}
+  .portrait img{border-radius:36px}
+  .word{align-self:auto; width:100%; max-width:560px; padding:20px 12px; gap:10px}
+  .word.l, .word.r{text-align:center; align-items:center}
+  .word p{max-width:34ch}
+  .fold{min-height:0}
+}
+
+/* ---------- what: the automate demo ---------- */
+.what .inner{display:flex; flex-direction:column}
+.what .head{display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:24px; margin-bottom:28px}
+.what .swap{display:grid; max-width:640px}
+.h-section .hand{font-size:1.12em}
+.swap > *{grid-area:1/1; transition:opacity .3s var(--ease), transform .5s var(--spring)}
+.swap > .before{transition-delay:.25s}
+.swap > .after{opacity:0; transform:translateY(6px)}
+.is-automated .swap > .before{opacity:0; transform:translateY(-6px); transition-delay:0s}
+.is-automated .swap > .after{opacity:1; transform:none; transition-delay:.25s}
+.what .hint{font-size:15px; color:var(--muted); max-width:30ch; text-align:right; line-height:1.55}
+@media (max-width:760px){ .what .head{grid-template-columns:1fr} .what .hint{text-align:left} }
+
+.stage{position:relative; height:560px; border-radius:28px; overflow:hidden; isolation:isolate;
+  background-color:var(--white);
+  background-image:radial-gradient(circle, rgba(21,23,26,.10) 1px, transparent 1.3px);
+  background-size:22px 22px; background-position:11px 11px;
+  border:1px solid var(--stone); box-shadow:var(--sh-1)}
+.stage.is-compact{border-radius:22px}
+
+.chip{position:absolute; top:18px; left:18px; z-index:8; display:flex; align-items:center; gap:8px;
+  font-weight:500; font-size:13px; color:var(--muted); background:rgba(255,255,255,.9);
+  border:1px solid var(--stone); border-radius:999px; padding:6px 14px 6px 12px; backdrop-filter:blur(6px)}
+.chip .dots{display:grid; width:8px; height:8px}
+.chip .dots i{grid-area:1/1; border-radius:50%; transition:opacity .3s}
+.chip .dots .d1{background:var(--muted)}
+.chip .dots .d2{background:var(--accent); opacity:0}
+.is-automated .chip .dots .d1{opacity:0}
+.is-automated .chip .dots .d2{opacity:1; transition-delay:.25s}
+
+.reset{position:absolute; top:18px; right:18px; z-index:9; display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  font:500 13px/1 var(--sans); color:var(--ink); background:rgba(255,255,255,.9);
+  border:1px solid var(--stone); border-radius:999px; padding:9px 14px 9px 12px;
+  opacity:0; transition:opacity .3s var(--ease) var(--rd,0s), transform .2s var(--ease)}
+.reset svg{width:13px; height:13px; flex:none}
+.is-automated .reset{opacity:1; --rd:1.2s}
+.reset:hover{transform:translateY(-1px)}
+.reset:active{transform:translateY(0) scale(.96)}
+.is-compact .reset{padding:9px}
+.is-compact .reset-txt{display:none}
+
+.tangle{position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; transition:opacity .45s var(--ease)}
+.is-automated .tangle{opacity:0}
+
+.card{position:absolute; left:0; top:0; z-index:var(--z,2);
+  transform:translate(var(--mx), var(--my)) rotate(var(--mr)) scale(var(--ms));
+  transition:transform .95s var(--spring) var(--d,0ms)}
+.is-automated .card{transform:translate(var(--ox), var(--oy)) rotate(0deg) scale(1); z-index:4}
+.drop, .wobble{position:absolute; inset:0}
+.drop{animation:drop .8s var(--spring) both; animation-delay:calc(var(--i) * 90ms + 250ms)}
+@keyframes drop{from{opacity:0; transform:translateY(-28px) scale(.94)} to{opacity:1; transform:none}}
+.wobble{animation:float var(--fdur,5s) ease-in-out var(--fdel,0s) infinite alternate}
+.is-automated .wobble{animation:none}
+@keyframes float{from{transform:translateY(-3px) rotate(-.9deg)} to{transform:translateY(3px) rotate(.9deg)}}
+
+.face{position:absolute; inset:0; border-radius:14px; overflow:hidden}
+.face-m{background:var(--tint,#FFF1B8); padding:12px 14px; box-shadow:var(--sh-1), 0 8px 20px -10px rgba(21,23,26,.25);
+  transition:opacity .3s var(--ease) calc(var(--d,0ms) + 120ms)}
+.face-m::before{content:""; position:absolute; top:-6px; left:50%; width:54px; height:16px; margin-left:-27px; transform:rotate(-3deg);
+  background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.04)}
+.face-c{opacity:0; background:var(--white); border:1px solid var(--stone); padding:14px 16px; box-shadow:var(--sh-2);
+  display:flex; flex-direction:column; justify-content:flex-start; gap:8px;
+  transition:opacity .35s var(--ease) calc(var(--d,0ms) + 60ms)}
+.is-automated .face-m{opacity:0}
+.is-automated .face-c{opacity:1; transition-delay:calc(var(--d,0ms) + 320ms)}
+
+.m-title{font-weight:700; font-size:15px; line-height:1.25; letter-spacing:-.01em}
+.m-note{font-size:12px; color:rgba(21,23,26,.6); line-height:1.4; margin-top:6px}
+.m-file{font-family:ui-monospace, Menlo, Consolas, monospace; font-size:12px; line-height:1.35}
+.m-big{font-family:var(--display); font-weight:800; font-size:26px; line-height:1; letter-spacing:-.03em}
+.m-red{color:var(--accent)}
+.m-strike{text-decoration:line-through; text-decoration-color:var(--accent); text-decoration-thickness:2px}
+
+.c-top{display:flex; align-items:center; justify-content:space-between; line-height:1.2}
+.c-num{font-weight:700; font-size:12px; color:var(--accent)}
+.c-tag{font-weight:600; font-size:11px; letter-spacing:.02em; text-transform:uppercase; color:var(--muted); background:var(--stone-soft); padding:2px 8px; border-radius:999px}
+.c-tag.ai{color:var(--accent-deep); background:var(--accent-tint)}
+.c-title{font-family:var(--display); font-weight:700; font-size:17px; line-height:1.15; letter-spacing:-.02em}
+.c-sub{font-size:12.5px; color:var(--muted); line-height:1.35; margin-top:3px}
+.is-compact .face-c{padding:11px 12px; gap:6px}
+.is-compact .c-title{font-size:15px}
+.is-compact .c-sub{font-size:11.5px}
+.is-compact .m-title{font-size:13.5px}
+.is-compact .m-big{font-size:22px}
+
+.conn{position:absolute; left:0; top:0; z-index:2; pointer-events:none; opacity:0;
+  transition:transform .55s var(--ease) var(--cd,0ms), opacity .15s linear var(--cd,0ms)}
+.conn::before{content:""; position:absolute; inset:0; background:var(--accent); border-radius:2px}
+.conn::after{content:""; position:absolute; width:8px; height:8px; border-top:2px solid var(--accent); border-right:2px solid var(--accent)}
+.conn.h{height:2px; transform:scaleX(0); transform-origin:left center}
+.conn.h::after{right:0; top:-3px; transform:rotate(45deg)}
+.conn.h.rev{transform-origin:right center}
+.conn.h.rev::after{right:auto; left:0; transform:rotate(-135deg)}
+.conn.v{width:2px; transform:scaleY(0); transform-origin:center top}
+.conn.v::after{bottom:0; left:-3px; transform:rotate(135deg)}
+.is-automated .conn{opacity:1; transform:none}
+
+.packet{position:absolute; left:0; top:0; z-index:3; width:12px; height:12px; border-radius:50%; opacity:0; pointer-events:none;
+  background:var(--accent); box-shadow:0 0 0 4px rgba(224,90,43,.18), 0 0 16px rgba(224,90,43,.6)}
+
+.out-label{position:absolute; z-index:2; pointer-events:none; white-space:nowrap;
+  font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+  opacity:0; transition:opacity .3s var(--ease)}
+.out-label b{font-weight:700; color:var(--accent)}
+.is-automated .out-label{opacity:1; transition-delay:1.4s}
+.is-compact .out-label .xl{display:none}
+
+.results{position:absolute; z-index:5; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--tile-gap,40px)}
+.is-compact .results{grid-template-columns:1fr}
+.result{display:block; border-radius:16px; color:var(--white); text-decoration:none;
+  opacity:0; transform:translateY(16px) scale(.95);
+  transition:opacity .25s var(--ease), transform .65s var(--spring)}
+.is-automated .result{opacity:1; transform:none; transition-delay:calc(1.6s + var(--ri) * .12s)}
+.result-in{position:relative; display:grid; height:var(--tile-h,108px); padding:14px 16px; border-radius:inherit; overflow:hidden;
+  grid-template:"proj arrow" auto "num num" 1fr "label label" auto / minmax(0,1fr) auto;
+  background:var(--ink); box-shadow:var(--sh-3); transition:transform .25s var(--ease)}
+.result-in::before{content:""; position:absolute; inset:0; background:radial-gradient(120% 100% at 0% 0%, rgba(224,90,43,.35), transparent 62%)}
+.result-in > *{position:relative}
+.result:hover .result-in{transform:translateY(-3px)}
+.result:active .result-in{transform:translateY(0) scale(.98)}
+.r-proj{grid-area:proj; font-weight:600; font-size:11px; letter-spacing:.1em; text-transform:uppercase; line-height:1.4;
+  color:rgba(255,255,255,.62); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.r-arrow{grid-area:arrow; display:grid; place-items:center; width:26px; height:26px; margin:-4px -4px 0 0; border-radius:50%; font-size:14px; line-height:1; color:var(--white); background:rgba(255,255,255,.12); transition:transform .25s var(--ease)}
+.result:hover .r-arrow{transform:translate(2px,-2px)}
+.r-num{grid-area:num; align-self:center; font-family:var(--display); font-weight:800; font-size:36px; line-height:1; letter-spacing:-.035em; white-space:nowrap}
+.r-num i{font-style:normal; font-family:var(--hand); font-weight:700; font-size:.62em; color:var(--accent); margin-left:6px; letter-spacing:0}
+.r-label{grid-area:label; font-size:13px; line-height:1.3; color:rgba(255,255,255,.78); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.is-compact .result-in{grid-template:"num label arrow" 1fr "num proj arrow" 1fr / 96px minmax(0,1fr) auto; column-gap:10px; padding:7px 14px}
+.is-compact .r-num{font-size:26px}
+.is-compact .r-label{align-self:end}
+.is-compact .r-proj{align-self:start}
+.is-compact .r-arrow{grid-row:1 / -1; align-self:center; margin:0}
+
+.dock{position:absolute; left:0; right:0; bottom:24px; z-index:10; display:flex; justify-content:center; pointer-events:none}
+.automate{pointer-events:auto; box-shadow:var(--sh-3); transition:transform .25s var(--spring), opacity .25s var(--ease) var(--ad,.5s)}
+.is-automated .automate{opacity:0; transform:scale(.9); --ad:0s}
+.automate svg{width:16px; height:16px; flex:none}
+.spark{animation:spark 2.4s var(--ease) infinite}
+@keyframes spark{0%,70%,100%{transform:rotate(0) scale(1)} 80%{transform:rotate(18deg) scale(1.2)}}
+.no-anim, .no-anim *{transition:none !important}
+
+/* ---------- work ---------- */
+.work{background:var(--stone-soft)}
+.work-grid{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:24px}
+@media (max-width:959px){ .work-grid{grid-template-columns:1fr} }
+.wcard{position:relative; display:flex; flex-direction:column; justify-content:space-between; gap:40px; min-height:300px; padding:28px;
+  background:var(--white); border:1px solid var(--stone); border-radius:16px; box-shadow:var(--sh-1); scroll-margin-top:calc(var(--nav-h) + 32px);
+  transition:transform .25s var(--ease)}
+.wcard::before{content:""; position:absolute; inset:-1px; border-radius:inherit; box-shadow:var(--sh-2); opacity:0; transition:opacity .25s var(--ease); pointer-events:none}
+.wcard:hover{transform:translateY(-4px)}
+.wcard:hover::before{opacity:1}
+.wcard::after{content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; opacity:0;
+  border:2px solid var(--accent); box-shadow:0 0 0 6px rgba(224,90,43,.14)}
+.wcard:target::after{animation:arrive 2.6s var(--ease) .3s both}
+@keyframes arrive{0%{opacity:0} 18%{opacity:1} 65%{opacity:1} 100%{opacity:.45}}
+.w-top{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.w-sector{font-weight:500; font-size:14px; color:var(--muted)}
+.w-go{display:grid; place-items:center; width:36px; height:36px; border-radius:50%; box-shadow:inset 0 0 0 1.5px var(--stone); font-size:18px; line-height:1; position:relative; isolation:isolate; transition:transform .25s var(--ease)}
+.w-go::before{content:""; position:absolute; inset:0; border-radius:inherit; background:var(--accent); opacity:0; z-index:-1; transition:opacity .25s var(--ease)}
+.w-go span{transition:opacity .2s; position:relative}
+.wcard:hover .w-go::before{opacity:1}
+.wcard:hover .w-go{transform:rotate(45deg); color:#fff; box-shadow:inset 0 0 0 1.5px var(--accent)}
+.w-body{display:flex; flex-direction:column; gap:14px}
+.wcard h3{font-family:var(--display); font-weight:700; font-size:24px; line-height:1.2; letter-spacing:-.02em}
+.wcard .w-result{font-size:15px; line-height:1.55; color:var(--muted)}
+.wcard .w-result b{color:var(--ink); font-weight:600}
+.w-tags{display:flex; flex-wrap:wrap; gap:8px}
+.tag{display:inline-flex; align-items:center; border-radius:999px; padding:5px 12px; font-weight:600; font-size:13px; line-height:1.3; color:var(--accent-deep); background:var(--accent-tint)}
+.work-more{margin-top:40px; display:flex; justify-content:center}
+
+/* ---------- tools ---------- */
+.tools .inner{display:flex; flex-direction:column; align-items:center}
+.tools .eyebrow{width:100%}
+.pills{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:12px; max-width:900px}
+.pills + .pills{margin-top:24px}
+.pill-tool{border:1.5px solid var(--stone); border-radius:999px; padding:12px 22px; font-weight:600; font-size:18px; line-height:1.5; background:var(--white)}
+.pill-skill{border-radius:999px; padding:12px 22px; font-weight:500; font-size:17px; line-height:1.45; color:var(--accent-deep); background:var(--accent-tint)}
+@media (max-width:760px){ .pill-tool{font-size:15px; padding:10px 16px} .pill-skill{font-size:14px; padding:10px 16px} }
+
+/* ---------- about ---------- */
+.about{background:var(--accent-deep); color:var(--white)}
+.about .inner{display:grid; grid-template-columns:420px minmax(0,1fr); gap:56px; align-items:center}
+.about img{width:100%; height:520px; object-fit:cover; object-position:50% 30%; border-radius:24px; box-shadow:0 24px 60px -24px rgba(0,0,0,.45)}
+.about h2{font-size:clamp(40px, 4.5vw, 56px); margin-bottom:24px}
+.about p{font-size:20px; line-height:1.65; color:rgba(255,255,255,.94)}
+.about p + p{margin-top:18px}
+@media (max-width:959px){ .about .inner{grid-template-columns:1fr; gap:28px} .about img{height:320px} .about p{font-size:17px} }
+
+/* ---------- contact ---------- */
+.contact .inner{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:64px; align-items:center}
+.contact h2{font-size:clamp(40px, 4.2vw, 56px)}
+.contact h2 .hand{font-size:1.15em}
+.contact .lead{margin-top:20px; font-size:17px; line-height:1.65; color:var(--muted); max-width:36ch}
+.contact .actions{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:32px}
+.mail{font-weight:500; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--stone); transition:transform .2s var(--ease)}
+.mail:hover{transform:translateY(-1px); color:var(--ink)}
+.form{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:40px; border-radius:24px; background:var(--stone-soft)}
+.field{display:flex; flex-direction:column; gap:6px}
+.field.full{grid-column:1 / -1}
+.field label{font-weight:600; font-size:14px}
+.field input, .field textarea{font:400 16px/1.5 var(--sans); color:var(--ink); background:var(--white); border:1px solid var(--stone); border-radius:12px; padding:12px 14px; width:100%}
+.field textarea{min-height:120px; resize:vertical}
+.form .btn{justify-self:start}
+@media (max-width:959px){ .contact .inner{grid-template-columns:1fr; gap:36px} .form{grid-template-columns:1fr; padding:22px 18px} }
+
+/* ---------- footer ---------- */
+.footer{border-top:1px solid var(--stone)}
+.footer .inner{padding:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:14px; color:var(--muted)}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .card, .conn, .result, .out-label, .reset, .rv{transition-duration:.01s !important; transition-delay:0s !important}
+  .drop, .wobble, .spark, .dot::after, .greet-cover, .fade{animation:none !important}
+  .rv{opacity:1; transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="inner">
+    <a class="brand" href="#top">Ruchin Dwivedi</a>
+    <div class="nav-links">
+      <a class="nav-link" href="#what">What I do</a>
+      <a class="nav-link" href="#work">Work</a>
+      <a class="nav-link" href="#about">About</a>
+      <a class="btn btn-accent" href="#contact">Let’s talk</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- ===== 1 · HERO ===== -->
+<section class="hero fold" id="hero">
+  <div class="inner">
+    <h1 class="greet-wrap"><span class="greet">Hi, I’m Ruchin!</span><span class="greet-cover" aria-hidden="true"></span></h1>
+    <div class="pill fade" style="animation-delay:.55s"><span class="dot"></span><span><span class="xs-hide">Based in </span>Copenhagen · Open to roles &amp; freelance<span class="xs-hide"> work</span></span></div>
+
+    <div class="hero-grid">
+      <a class="word l fade" href="#work" style="animation-delay:.7s">
+        <h2 class="h-display">AI<br>strategist</h2>
+        <p>I work out where AI pays off for a business, and what it’s worth.</p>
+      </a>
+      <div class="portrait fade" style="animation-delay:.6s">
+        <img src="/imgs/jpeg_0_14245.jpg" alt="Ruchin Dwivedi" width="420" height="540">
+      </div>
+      <a class="word r fade" href="#what" style="animation-delay:.85s">
+        <h2 class="h-display">AI<br>builder</h2>
+        <p>…then I build it: apps, agents and automations that run in production.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2 · WHAT I DO (the demo) ===== -->
+<section class="what fold" id="what">
+  <div class="inner" id="demo">
+    <div class="eyebrow rv">What I actually do</div>
+    <div class="head rv" style="--rvd:.1s">
+      <div class="swap">
+        <h2 class="h-section before">Most teams still run on something like this.</h2>
+        <h2 class="h-section after">This is what I build. <span class="hand">Pick a result</span> to see the project.</h2>
+      </div>
+      <p class="hint">Six everyday chores, six tools, nobody quite sure who approved what. Try the button.</p>
+    </div>
+
+    <div class="stage rv" id="stage" style="--rvd:.2s" aria-label="Interactive demo: a messy manual workflow that turns into an automated one and shows real project results">
+      <div class="chip" aria-hidden="true">
+        <span class="dots"><i class="d1"></i><i class="d2"></i></span>
+        <span class="swap"><span class="before">Manual · 6 tools · 0 visibility</span><span class="after">Automated · 6 steps · live</span></span>
+      </div>
+
+      <button class="reset" id="reset" type="button" aria-label="Make the workflow messy again">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+        <span class="reset-txt">Make it messy again</span>
+      </button>
+
+      <svg class="tangle" aria-hidden="true">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L8 5 L1 9" fill="none" stroke="rgba(21,23,26,.45)" stroke-width="1.6"/>
+          </marker>
+        </defs>
+        <g class="paths"></g>
+      </svg>
+
+      <div class="conn"></div><div class="conn"></div><div class="conn"></div><div class="conn"></div><div class="conn"></div><div class="conn"></div>
+      <div class="packet" aria-hidden="true"></div>
+
+      <div class="card" style="--i:0; --tint:#FFF1B8; --fdur:4.6s; --fdel:-1s"><div class="drop"><div class="wobble">
+        <div class="face face-m"><div class="m-file">invoices_v7_<wbr>FINAL(2).xlsx</div><div class="m-note">copy → paste → pray</div></div>
+        <div class="face face-c"><div class="c-top"><span class="c-num">01</span><span class="c-tag">intake</span></div><div><div class="c-title">Capture</div><div class="c-sub">Docs &amp; voice notes, one inbox</div></div></div>
+      </div></div></div>
+      <div class="card" style="--i:1; --tint:#FFDCD2; --fdur:5.4s; --fdel:-2.5s"><div class="drop"><div class="wobble">
+        <div class="face face-m"><div class="m-big">43 <span class="m-red">unread</span></div><div class="m-note">“any update??”</div></div>
+        <div class="face face-c"><div class="c-top"><span class="c-num">02</span><span class="c-tag ai">AI agent</span></div><div><div class="c-title">Classify</div><div class="c-sub">Tags, extracts, prioritises</div></div></div>
+      </div></div></div>
+      <div class="card" style="--i:2; --tint:#E7E0FF; --fdur:4.2s; --fdel:-.5s"><div class="drop"><div class="wobble">
+        <div class="face face-m"><div class="m-title">Re-key every order into the CRM</div><div class="m-note">every. single. friday.</div></div>
+        <div class="face face-c"><div class="c-top"><span class="c-num">03</span><span class="c-tag ai">AI agent</span></div><div><div class="c-title">Route</div><div class="c-sub">Right task, right person</div></div></div>
+      </div></div></div>
+      <div class="card" style="--i:3; --tint:#FFF1B8; --fdur:5s; --fdel:-3s"><div class="drop"><div class="wobble">
+        <div class="face face-m"><div class="m-big">Who approved this<span class="m-red">??</span></div></div>
+        <div class="face face-c"><div class="c-top"><span class="c-num">04</span><span class="c-tag">human</span></div><div><div class="c-title">Approve</div><div class="c-sub">People sign off what matters</div></div></div>
+      </div></div></div>
+      <div class="card" style="--i:4; --tint:#EADBC8; --fdur:4.8s; --fdel:-1.8s"><div class="drop"><div class="wobble">
+        <div class="face face-m"><div class="m-title">Visit log = <span class="m-strike">spreadsheet</span> photo of a notebook</div></div>
+        <div class="face face-c"><div class="c-top"><span class="c-num">05</span><span class="c-tag ai">AI agent</span></div><div><div class="c-title">Forecast</div><div class="c-sub">Workload &amp; anomalies flagged</div></div></div>
+      </div></div></div>
+      <div class="card" style="--i:5; --tint:#DDEBFF; --fdur:5.6s; --fdel:-4s"><div class="drop"><div class="wobble">
+        <div class="face face-m"><div class="m-title">Weekly report</div><div class="m-note">6 hrs · every week · nobody reads it</div></div>
+        <div class="face face-c"><div class="c-top"><span class="c-num">06</span><span class="c-tag">live</span></div><div><div class="c-title">Report</div><div class="c-sub">Live KPIs, zero spreadsheets</div></div></div>
+      </div></div></div>
+
+      <div class="out-label" aria-hidden="true"><b>Output</b> · real results<span class="xl">, real projects</span></div>
+      <div class="results" id="results" aria-label="Results from real projects">
+        <a class="result" href="#work-rxfield" style="--ri:0"><span class="result-in">
+          <span class="r-proj">RxField · Pharma</span><span class="r-arrow" aria-hidden="true">↗</span>
+          <span class="r-num"><b data-count="40">40</b>+<i>hrs</i></span>
+          <span class="r-label">saved every week</span>
+        </span></a>
+        <a class="result" href="#work-ekostay" style="--ri:1"><span class="result-in">
+          <span class="r-proj">EKOSTAY · Villas</span><span class="r-arrow" aria-hidden="true">↗</span>
+          <span class="r-num"><b data-count="11">11</b>+<i>agents</i></span>
+          <span class="r-label">running 150+ villas</span>
+        </span></a>
+        <a class="result" href="#work-manufacturer" style="--ri:2"><span class="result-in">
+          <span class="r-proj">Manufacturing</span><span class="r-arrow" aria-hidden="true">↗</span>
+          <span class="r-num"><b data-count="35">35</b>%</span>
+          <span class="r-label">shorter wait times</span>
+        </span></a>
+      </div>
+
+      <div class="dock">
+        <button class="btn btn-accent btn-lg automate" id="automate" type="button">
+          <svg class="spark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" opacity=".7"/></svg>
+          Automate this
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3 · WORK ===== -->
+<section class="work fold" id="work">
+  <div class="inner">
+    <div class="eyebrow rv">Selected work</div>
+    <div class="work-grid">
+      <article class="wcard rv" id="work-rxfield" style="--rvd:.05s">
+        <div class="w-top"><span class="w-sector">Pharma · app build</span><span class="w-go" aria-hidden="true"><span>↗</span></span></div>
+        <div class="w-body">
+          <h3>Gave a field sales team back 40 hours a week</h3>
+          <p class="w-result">RxField replaced spreadsheet tracking for a 20+ user team. <b>6+ AI agents</b> across visits, orders and expenses.</p>
+          <div class="w-tags"><span class="tag">Built in React Native + Supabase</span></div>
+        </div>
+      </article>
+      <article class="wcard rv" id="work-ekostay" style="--rvd:.15s">
+        <div class="w-top"><span class="w-sector">Hospitality · app build</span><span class="w-go" aria-hidden="true"><span>↗</span></span></div>
+        <div class="w-body">
+          <h3>Eleven AI agents running a 150-villa operation</h3>
+          <p class="w-result">Voice notes become tasks, field teams get routed, and <b>managers approve</b> the decisions that matter.</p>
+          <div class="w-tags"><span class="tag">Agentic AI · human-in-the-loop</span></div>
+        </div>
+      </article>
+      <article class="wcard rv" id="work-manufacturer" style="--rvd:.25s">
+        <div class="w-top"><span class="w-sector">Manufacturing · AI strategy</span><span class="w-go" aria-hidden="true"><span>↗</span></span></div>
+        <div class="w-body">
+          <h3>Cut process wait times 35% by funding what was ready</h3>
+          <p class="w-result">Prioritised AI use cases by feasibility and data readiness, <b>not assumed impact</b>.</p>
+          <div class="w-tags"><span class="tag">Use-case prioritisation</span></div>
+        </div>
+      </article>
+    </div>
+    <div class="work-more rv" style="--rvd:.3s"><a class="link" href="#">See all my work →</a></div>
+  </div>
+</section>
+
+<!-- ===== 4 · TOOLS ===== -->
+<section class="tools fold" id="tools">
+  <div class="inner">
+    <div class="eyebrow rv">Tools &amp; skills</div>
+    <ul class="pills rv" style="--rvd:.1s" aria-label="Tools">
+      <li class="pill-tool">Python</li><li class="pill-tool">SQL</li><li class="pill-tool">Power BI</li><li class="pill-tool">Azure AI Foundry</li><li class="pill-tool">n8n</li><li class="pill-tool">React Native</li><li class="pill-tool">Supabase</li>
+    </ul>
+    <ul class="pills rv" style="--rvd:.2s" aria-label="Skills">
+      <li class="pill-skill">AI &amp; automation strategy</li><li class="pill-skill">ROI modelling (TVA)</li><li class="pill-skill">Use-case prioritisation</li><li class="pill-skill">Responsible AI governance</li><li class="pill-skill">Finance &amp; F&amp;A operations</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 5 · ABOUT ===== -->
+<section class="about fold" id="about">
+  <div class="inner">
+    <img class="rv" src="/check_trolltunga.jpg" alt="Ruchin at Trolltunga, Norway" width="420" height="520">
+    <div class="rv" style="--rvd:.1s">
+      <h2 class="h-display">About me</h2>
+      <p>I started out as an engineer, moved into enterprise delivery, and then into AI and automation consulting. I still write code, and most of what I do sits between those two worlds.</p>
+      <p>For the last five years I’ve helped leadership teams work out where AI creates value, then built the systems myself. <span class="squiggle light">That keeps the advice honest</span> about what is actually possible.</p>
+      <p>Off the clock I’m hiking, bouldering, cooking, or in Danish class.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6 · CONTACT ===== -->
+<section class="contact fold" id="contact">
+  <div class="inner">
+    <div class="rv">
+      <h2 class="h-display">Got a process that <span class="hand">should run itself</span>?</h2>
+      <p class="lead">Open to AI adoption and transformation roles, and to freelance builds. Either way, let’s start with the problem.</p>
+      <div class="actions">
+        <a class="btn btn-outline" href="#">Connect on LinkedIn ↗</a>
+        <a class="mail" href="mailto:ruchindwd@gmail.com">ruchindwd@gmail.com</a>
+      </div>
+    </div>
+    <form class="form rv" style="--rvd:.1s" onsubmit="return false">
+      <div class="field"><label for="f-name">Name</label><input id="f-name" type="text" autocomplete="name"></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email"></div>
+      <div class="field full"><label for="f-msg">What would you like help with?</label><textarea id="f-msg"></textarea></div>
+      <button class="btn btn-accent btn-lg" type="submit">Let’s get in touch</button>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="inner"><span>© 2026 Ruchin Dwivedi</span><span>Copenhagen, Denmark · prototype, throwaway</span></div>
+</footer>
+
+<p class="sr" aria-live="polite" id="live"></p>
+
+<script>
+(() => {
+  const demo = document.getElementById('demo');
+  const stage = document.getElementById('stage');
+  const cards = [...stage.querySelectorAll('.card')];
+  const conns = [...stage.querySelectorAll('.conn')];
+  const packet = stage.querySelector('.packet');
+  const pathsG = stage.querySelector('.tangle .paths');
+  const results = document.getElementById('results');
+  const outLabel = stage.querySelector('.out-label');
+  const nums = [...results.querySelectorAll('[data-count]')];
+  const btn = document.getElementById('automate');
+  const reset = document.getElementById('reset');
+  const live = document.getElementById('live');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // messy layout: fractional position inside the stage, rotation, scale, stacking
+  const MESSY = [
+    {fx:.02, fy:.06, r:-8,  s:.96, z:3},
+    {fx:.58, fy:.00, r:6,   s:.92, z:5},
+    {fx:.30, fy:.46, r:-3,  s:1.0, z:6},
+    {fx:.98, fy:.40, r:10,  s:.94, z:4},
+    {fx:.06, fy:.96, r:5,   s:.92, z:2},
+    {fx:.74, fy:.92, r:-9,  s:.96, z:7},
+  ];
+  const TANGLE = [[0,3],[3,1],[1,5],[5,2],[2,4],[4,0],[1,4],[0,2]];
+
+  let automated = false, route = [], packetAnim = null, packetTimer = null, run = 0;
+
+  function rng(seed){ return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  function layout(){
+    const W = stage.clientWidth;
+    const mode = W >= 1000 ? 'wide' : (W >= 600 ? 'mid' : 'compact');
+    const compact = mode === 'compact', wide = mode === 'wide';
+    stage.classList.toggle('is-compact', compact);
+    const H = compact ? 650 : (wide ? 440 : 580);
+    stage.style.height = H + 'px';
+
+    const pad = compact ? 16 : 26, top = compact ? 56 : 58, bottom = compact ? 86 : 92, padB = compact ? 20 : 28;
+    const C = compact ? 2 : (wide ? 6 : 3), R = 6 / C;
+    const gapX = compact ? 26 : (wide ? 32 : 40), gapY = compact ? 28 : 48;
+    const cw = compact ? Math.min(170, (W - 2*pad - gapX) / 2) : Math.min(wide ? 176 : 200, (W - 2*pad - (C-1)*gapX) / C);
+    const ch = compact ? 100 : 116;
+    const zone = compact ? 36 : 56;
+    const tileH = compact ? 50 : 108;
+    const tileGap = compact ? 8 : gapX;
+    const tilesH = compact ? 3*tileH + 2*tileGap : tileH;
+    const tw = C*cw + (C-1)*gapX, flowH = R*ch + (R-1)*gapY;
+    const x0 = (W - tw) / 2;
+    const y0 = top + Math.max(0, (H - top - padB - (flowH + zone + tilesH)) / 2);
+    const tilesY = y0 + flowH + zone;
+
+    // snake order so connectors read as one continuous flow
+    const grid = [];
+    for (let i = 0; i < 6; i++){ const r = Math.floor(i / C); let c = i % C; if (r % 2) c = C - 1 - c; grid.push({c, r}); }
+    const ordered = grid.map(g => ({x: x0 + g.c*(cw+gapX), y: y0 + g.r*(ch+gapY)}));
+
+    const messyCenters = [];
+    cards.forEach((card, i) => {
+      const m = MESSY[i];
+      const s = compact ? m.s * .88 : m.s;
+      const ix = cw*(1-s)/2, iy = ch*(1-s)/2;
+      const xMin = pad - ix, xMax = W - pad - cw + ix;
+      const yMin = top - 6 - iy, yMax = H - bottom + 20 - ch + iy;
+      const mx = xMin + m.fx*(xMax - xMin), my = yMin + m.fy*(yMax - yMin);
+      card.style.width = cw + 'px'; card.style.height = ch + 'px';
+      card.style.setProperty('--mx', mx + 'px'); card.style.setProperty('--my', my + 'px');
+      card.style.setProperty('--mr', m.r + 'deg'); card.style.setProperty('--ms', s);
+      card.style.setProperty('--z', m.z);
+      card.style.setProperty('--ox', ordered[i].x + 'px'); card.style.setProperty('--oy', ordered[i].y + 'px');
+      messyCenters.push({x: mx + cw/2, y: my + ch/2});
+    });
+
+    // connectors: five between consecutive steps, a sixth from step 06 down to the output
+    conns.forEach((el, i) => {
+      const a = ordered[i], b = ordered[i+1];
+      el.className = 'conn';
+      el.style.width = el.style.height = '';
+      if (!b){
+        el.classList.add('v');
+        Object.assign(el.style, {left: (a.x + cw/2 - 1) + 'px', top: (a.y + ch + 8) + 'px', height: (zone - 16) + 'px'});
+      } else if (Math.abs(a.y - b.y) < 1){
+        el.classList.add('h');
+        const left = Math.min(a.x, b.x) + cw + 8;
+        if (b.x < a.x) el.classList.add('rev');
+        Object.assign(el.style, {left: left + 'px', top: (a.y + ch/2 - 1) + 'px', width: (gapX - 16) + 'px'});
+      } else {
+        el.classList.add('v');
+        Object.assign(el.style, {left: (a.x + cw/2 - 1) + 'px', top: (a.y + ch + 8) + 'px', height: (gapY - 16) + 'px'});
+      }
+    });
+
+    // output label + result tiles
+    const last = ordered[5];
+    const connX = last.x + cw/2;
+    const labelY = last.y + ch + zone/2 - 8;
+    outLabel.style.top = labelY + 'px';
+    if (compact) outLabel.style.left = x0 + 'px';
+    else if (connX > W/2) outLabel.style.left = (connX - outLabel.offsetWidth - 16) + 'px';
+    else outLabel.style.left = (connX + 16) + 'px';
+    Object.assign(results.style, {left: x0 + 'px', top: tilesY + 'px', width: tw + 'px'});
+    results.style.setProperty('--tile-h', tileH + 'px');
+    results.style.setProperty('--tile-gap', tileGap + 'px');
+
+    route = ordered.map(p => ({x: p.x + cw/2, y: p.y + ch/2}));
+    route.push({x: connX, y: tilesY - 6});
+
+    // tangled, crossing arrows between the messy notes
+    const rand = rng(7);
+    pathsG.innerHTML = TANGLE.map(([a, b], k) => {
+      const A = messyCenters[a], B = messyCenters[b];
+      const c1x = A.x + (rand() - .5) * W * .9, c1y = A.y + (rand() - .5) * H * .9;
+      const c2x = B.x + (rand() - .5) * W * .9, c2y = B.y + (rand() - .5) * H * .9;
+      const dash = k % 3 === 0 ? '5 6' : (k % 3 === 1 ? '' : '2 5');
+      return `<path d="M${A.x} ${A.y} C${c1x} ${c1y} ${c2x} ${c2y} ${B.x} ${B.y}" fill="none" stroke="rgba(21,23,26,.32)" stroke-width="1.5" stroke-linecap="round" ${dash ? `stroke-dasharray="${dash}"` : ''} marker-end="url(#ah)"/>`;
+    }).join('');
+
+    if (automated && packetAnim){ startPacket(); }
+  }
+
+  function startPacket(){
+    if (packetAnim) packetAnim.cancel();
+    const pts = route.map(c => `translate(${c.x - 6}px, ${c.y - 6}px)`);
+    const n = pts.length - 1, frames = [];
+    frames.push({transform: pts[0], opacity: 0, offset: 0});
+    pts.forEach((t, i) => frames.push({transform: t, opacity: 1, offset: .05 + i * (.88 / n)}));
+    frames.push({transform: pts[n], opacity: 0, offset: 1});
+    packetAnim = packet.animate(frames, {duration: 4600, iterations: Infinity, easing: 'linear'});
+  }
+
+  function countUp(token){
+    nums.forEach((el, i) => {
+      const target = +el.dataset.count;
+      if (reduce){ el.textContent = target; return; }
+      el.textContent = '0';
+      const t0 = performance.now() + 1650 + i * 120, dur = 900;
+      const tick = (now) => {
+        if (token !== run) return;
+        const p = Math.min(1, Math.max(0, (now - t0) / dur));
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  function setState(next){
+    automated = next;
+    const token = ++run;
+    cards.forEach((c, i) => c.style.setProperty('--d', (reduce ? 0 : (next ? i : 5 - i) * 70) + 'ms'));
+    conns.forEach((c, i) => c.style.setProperty('--cd', (reduce ? 0 : (next ? 700 + i * 120 : (5 - i) * 30)) + 'ms'));
+    demo.classList.toggle('is-automated', next);
+    btn.inert = next; reset.inert = !next; results.inert = !next;
+    live.textContent = next
+      ? 'Automated: six manual chores became one connected flow. Three results appeared, each linking to the project behind it.'
+      : 'Back to the messy, manual version.';
+    clearTimeout(packetTimer);
+    if (packetAnim){ packetAnim.cancel(); packetAnim = null; }
+    if (next){
+      countUp(token);
+      if (!reduce) packetTimer = setTimeout(startPacket, 1500);
+    } else {
+      nums.forEach(el => { el.textContent = el.dataset.count; });
+    }
+  }
+
+  btn.addEventListener('click', () => { setState(true); reset.focus({preventScroll: true}); });
+  reset.addEventListener('click', () => { setState(false); btn.focus({preventScroll: true}); });
+
+  let rt;
+  addEventListener('resize', () => {
+    demo.classList.add('no-anim');
+    layout();
+    clearTimeout(rt);
+    rt = setTimeout(() => demo.classList.remove('no-anim'), 120);
+  });
+
+  reset.inert = true; results.inert = true;
+  demo.classList.add('no-anim');
+  layout();
+  requestAnimationFrame(() => requestAnimationFrame(() => demo.classList.remove('no-anim')));
+  document.fonts && document.fonts.ready.then(layout);
+
+  // scroll reveal
+  const rvs = [...document.querySelectorAll('.rv')];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold: .05});
+  rvs.forEach(el => io.observe(el));
+  // anything already above the fold on load (deep links, reloads mid-page) shows at once
+  const catchUp = () => rvs.forEach(el => { if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in'); });
+  catchUp(); addEventListener('load', catchUp);
+})();
+</script>
+</body>
+</html>

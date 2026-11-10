@@ -316,13 +316,34 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @media (max-width:760px){ .pill-tool{font-size:15px; padding:10px 16px} .pill-skill{font-size:14px; padding:10px 16px} }
 
 /* ---------- about ---------- */
-.about{background:var(--accent-deep); color:var(--white)}
-.about .inner{display:grid; grid-template-columns:420px minmax(0,1fr); gap:56px; align-items:center}
-.about img{width:100%; height:520px; object-fit:cover; object-position:50% 30%; border-radius:24px; box-shadow:0 24px 60px -24px rgba(0,0,0,.45)}
+.about{--cw:300px; background:var(--accent-deep); color:var(--white); overflow:hidden}
+.about .inner{display:grid; grid-template-columns:calc(var(--cw) * 1.5 + 24px) minmax(0,1fr); gap:56px; align-items:center}
+/* two travel polaroids: tilted opposite ways, they fan apart on hover; a click brings one to the front */
+.snaps{position:relative; width:calc(var(--cw) * 1.5); height:calc(var(--cw) * 1.8); margin:0 auto}
+.snap{position:absolute; z-index:1; width:var(--cw); padding:12px 12px 0; border:0; border-radius:6px; background:#FFFDF8; color:var(--ink); font:inherit; text-align:center; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  box-shadow:0 1px 2px rgba(70,22,6,.22), 0 12px 24px -10px rgba(70,22,6,.45), 0 34px 64px -28px rgba(40,10,2,.6);
+  transition:transform .6s var(--spring)}
+.snap-a{right:0; top:0; transform:rotate(6deg)}
+.snap-b{left:0; bottom:0; transform:rotate(-5deg)}
+.snap.is-front{z-index:2}
+.snap::before{content:""; position:absolute; z-index:2; top:-11px; left:50%; width:88px; height:24px; margin-left:-44px; border-radius:2px; background:rgba(255,241,184,.88); box-shadow:0 1px 2px rgba(0,0,0,.14); transform:rotate(-4deg)}
+.snap-b::before{background:rgba(221,235,255,.9); transform:rotate(3deg)}
+.snap-photo{position:relative; display:block; aspect-ratio:3/4; overflow:hidden; border-radius:2px; background:var(--stone-soft)}
+.snap-photo img{display:block; width:100%; height:100%; object-fit:cover; transition:transform .8s var(--spring)}
+.snap-a img{object-position:50% 32%}
+.snap-b img{object-position:50% 50%}
+.snap-photo::after{content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:multiply; background:linear-gradient(to top, rgba(40,12,4,.26), transparent 36%), rgba(224,90,43,.06)}
+.snap-cap{display:block; padding:10px 4px 14px; font:700 20px/1.2 var(--hand); color:var(--ink)}
+.snaps:hover .snap-a{transform:translate(8%, -3%) rotate(10deg)}
+.snaps:hover .snap-b{transform:translate(-8%, 3%) rotate(-9deg)}
+.snaps .snap:hover{z-index:3; transform:translateY(-2%) rotate(0deg) scale(1.03)}
+.snap:hover img{transform:scale(1.04)}
+.snap:focus-visible{z-index:3; outline:3px solid var(--white); outline-offset:6px}
+.snaps .snap:active{transform:rotate(0deg) scale(.98)}
 .about h2{font-size:clamp(40px, 4.5vw, 56px); margin-bottom:24px}
 .about p{font-size:20px; line-height:1.65; color:rgba(255,255,255,.94)}
 .about p + p{margin-top:18px}
-@media (max-width:959px){ .about .inner{grid-template-columns:1fr; gap:28px} .about img{height:320px} .about p{font-size:17px} }
+@media (max-width:959px){ .about{--cw:min(230px, 56vw)} .about .inner{grid-template-columns:1fr; gap:36px} .snap-cap{font-size:17px; padding:8px 4px 12px} .about p{font-size:17px} }
 
 /* ---------- contact ---------- */
 .contact .inner{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:64px; align-items:center}
@@ -350,9 +371,49 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .footer{border-top:1px solid var(--stone)}
 .footer .inner{padding:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:14px; color:var(--muted)}
 
+/* ---------- larger-than-life portrait (desktop widths) ----------
+   --R  height of the row under the greeting
+   --aw arch width; --pw photo width (wider than the arch, so the shoulders spill past it)
+   --crop how much of the chest is cut off so the head sits ~40px under the greeting
+   the arch starts at forehead height, so the head breaks out above its curve */
+@media (min-width:1024px){
+  .hero{--ht:150px; --R:calc(100svh - var(--nav-h) - var(--ht));
+    --aw:min(480px, calc((var(--R) - 30px) * 1.11)); --pw:calc(var(--aw) * 1.25);
+    --crop:max(0px, calc(var(--pw) * 1.0666 - var(--R) + 40px))}
+  .hero-grid{grid-template-columns:minmax(0,1fr) var(--aw) minmax(0,1fr)}
+  .portrait-col{justify-content:flex-end; overflow:visible}
+  .portrait{width:var(--aw)}
+  .portrait img{width:var(--pw); max-width:none; margin-left:calc((var(--aw) - var(--pw)) / 2); margin-bottom:calc(var(--crop) * -1); pointer-events:none}
+  .portrait::before{left:0; right:0; height:calc(var(--pw) * .9426 - var(--crop)); border-radius:calc(var(--aw) / 2) calc(var(--aw) / 2) 0 0}
+}
+/* ---------- laptop screens: desktop width, short height ---------- */
+/* sizes follow the screen height so each section fits one screen, down to ~560px tall */
+@media (min-width:1024px) and (max-height:880px){
+  .inner{padding-top:clamp(20px, 5vh, 44px); padding-bottom:clamp(20px, 5vh, 44px)}
+  .eyebrow{margin-bottom:clamp(14px, 3.6vh, 32px)}
+  .h-section{font-size:clamp(28px, 5vh, 40px)}
+  .what .head{margin-bottom:clamp(12px, 2.3vh, 20px)}
+  .hero{min-height:0; --ht:calc(clamp(14px, 3.6vh, 32px) + clamp(30px, 4.6vh, 40px) * 1.15 + clamp(6px, 1.2vh, 10px) + 36px)}
+  .hero-top{padding-top:clamp(14px, 3.6vh, 32px); gap:clamp(6px, 1.2vh, 10px)}
+  .greet{font-size:clamp(30px, 4.6vh, 40px)}
+  .word h2{font-size:clamp(40px, 8vh, 60px)}
+  .word p{font-size:clamp(15px, 2.6vh, 18px)}
+  .word.l{padding:24px 32px 24px 16px}
+  .word.r{padding:24px 16px 24px 32px}
+  .cue{bottom:clamp(10px, 2.4vh, 22px)}
+  .stage.is-tight .face-c{padding:11px 12px; gap:6px}
+  .stage.is-tight .c-title{font-size:15px}
+  .stage.is-tight .c-sub{font-size:11.5px}
+  .stage.is-tight .r-num{font-size:30px}
+  .stage.is-tight .result-in{padding:10px 16px 12px}
+  .wcard{min-height:clamp(230px, 40vh, 300px); gap:clamp(20px, 4vh, 40px)}
+  .about{--cw:min(300px, calc((100svh - var(--nav-h) - 64px) / 1.8))}
+  .about h2{margin-bottom:clamp(12px, 2.6vh, 24px)}
+  .about p{font-size:clamp(16px, 2.7vh, 20px)}
+}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
-  .card, .conn, .result, .out-label, .reset, .rv{transition-duration:.01s !important; transition-delay:0s !important}
+  .card, .conn, .result, .out-label, .reset, .rv, .snap, .snap img{transition-duration:.01s !important; transition-delay:0s !important}
   .drop, .wobble, .spark, .dot::after, .greet-cover, .fade, .cue-hop{animation:none !important}
   .rv{opacity:1; transform:none}
 }
@@ -542,7 +603,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 <!-- ===== 5 · ABOUT ===== -->
 <section class="about fold" id="about">
   <div class="inner">
-    <img class="rv" src="check_trolltunga.jpg" alt="Ruchin at Trolltunga, Norway" width="420" height="520" loading="lazy">
+    <div class="snaps rv" id="snaps" role="group" aria-label="Travel photos">
+      <button class="snap snap-a" type="button" aria-label="Bring the Trolltunga photo to the front">
+        <span class="snap-photo"><img src="check_trolltunga.jpg" alt="Ruchin at Trolltunga, Norway" width="640" height="1139" loading="lazy"></span>
+        <span class="snap-cap">Trolltunga, Norway</span>
+      </button>
+      <button class="snap snap-b is-front" type="button" aria-label="Bring the Møns Klint photo to the front">
+        <span class="snap-photo"><img src="imgs/mons-klint.webp" alt="Ruchin on a railing above the chalk cliffs at Møns Klint, Denmark" width="900" height="1200" loading="lazy"></span>
+        <span class="snap-cap">Møns Klint, Denmark</span>
+      </button>
+    </div>
     <div class="rv" style="--rvd:.1s">
       <h2 class="h-display">About me</h2>
       <p>I started out as an engineer, moved into enterprise delivery, and then into AI and automation consulting. I still write code, and most of what I do sits between those two worlds.</p>
@@ -624,16 +694,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     const mode = W >= 1000 ? 'wide' : (W >= 600 ? 'mid' : 'compact');
     const compact = mode === 'compact', wide = mode === 'wide';
     stage.classList.toggle('is-compact', compact);
-    const H = compact ? 650 : (wide ? 440 : 580);
+    let H = compact ? 650 : (wide ? 440 : 580);
+    // on short laptop screens, give the board whatever height is left under the heading
+    if (wide && innerHeight <= 880){
+      const inner = stage.parentElement, cs = getComputedStyle(inner);
+      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      let used = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      [...inner.children].forEach(el => { if (el === stage) return; const st = getComputedStyle(el); used += el.offsetHeight + parseFloat(st.marginTop) + parseFloat(st.marginBottom); });
+      H = Math.max(310, Math.min(400, Math.floor(innerHeight - navH - used)));
+    }
+    const tight = wide && H < 380;
+    stage.classList.toggle('is-tight', tight);
     stage.style.height = H + 'px';
 
-    const pad = compact ? 16 : 26, top = compact ? 56 : 58, bottom = compact ? 86 : 92, padB = compact ? 20 : 28;
+    const pad = compact ? 16 : 26, top = compact ? 56 : (tight ? 52 : 58), bottom = compact ? 86 : (tight ? 84 : 92), padB = compact ? 20 : (tight ? 20 : 28);
     const C = compact ? 2 : (wide ? 6 : 3), R = 6 / C;
     const gapX = compact ? 26 : (wide ? 32 : 40), gapY = compact ? 28 : 48;
     const cw = compact ? Math.min(170, (W - 2*pad - gapX) / 2) : Math.min(wide ? 176 : 200, (W - 2*pad - (C-1)*gapX) / C);
-    const ch = compact ? 100 : 116;
-    const zone = compact ? 36 : 56;
-    const tileH = compact ? 50 : 108;
+    const ch = compact || tight ? 100 : 116;
+    const zone = compact ? 36 : (tight ? 40 : 56);
+    const tileH = compact ? 50 : (tight ? 96 : 108);
     const tileGap = compact ? 8 : gapX;
     const tilesH = compact ? 3*tileH + 2*tileGap : tileH;
     const tw = C*cw + (C-1)*gapX, flowH = R*ch + (R-1)*gapY;
@@ -786,6 +866,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   if (new URLSearchParams(location.search).get('sent') === '1'){
     document.getElementById('contact-box').classList.add('is-sent');
   }
+
+  /* ---------- about: bring the clicked polaroid to the front ---------- */
+  const snaps = [...document.querySelectorAll('.snap')];
+  snaps.forEach(card => card.addEventListener('click', () => snaps.forEach(c => c.classList.toggle('is-front', c === card))));
 })();
 </script>
 </body>

@@ -190,6 +190,18 @@ html.no-js .rv{opacity:1; transform:none}
 .footer{border-top:1px solid var(--stone)}
 .footer .inner{padding:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:14px; color:var(--muted)}
 
+/* ---------- laptop screens: desktop width, short height ---------- */
+@media (min-width:1024px) and (max-height:880px){
+  .work-head{padding:clamp(20px, 4vh, 32px) 24px clamp(16px, 3vh, 24px)}
+  .work-head h1{font-size:clamp(48px, 7.5vh, 60px)}
+  .work-sub{margin-top:clamp(6px, 1.4vh, 12px); font-size:clamp(20px, 3vh, 24px)}
+  .work-body{gap:clamp(16px, 3.4vh, 28px)}
+  .wdetail{min-height:min(440px, calc(100svh - var(--nav-h) - 120px)); padding:clamp(24px, 4.4vh, 36px) 40px; gap:clamp(12px, 2.2vh, 18px)}
+  .wdetail-in, .wdetail-body{gap:clamp(12px, 2.2vh, 18px)}
+  .lede{font-size:clamp(32px, 5vh, 40px)}
+  .wdetail-body p:not(.lede){font-size:clamp(15px, 2.4vh, 17px)}
+  .wcount b{font-size:clamp(40px, 6vh, 48px)}
+}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
   .rv, .rot.live, .tab-ink.live{transition-duration:.01s !important; transition-delay:0s !important}
