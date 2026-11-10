@@ -15,6 +15,7 @@ const mime = {
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.jpeg': 'image/jpeg',
   '.gif': 'image/gif',
   '.txt': 'text/plain',
@@ -23,6 +24,7 @@ const mime = {
 const server = http.createServer((req, res) => {
   let reqPath = decodeURIComponent(req.url.split('?')[0]);
   if (reqPath === '/') reqPath = '/portfolio.html';
+  if (reqPath === '/work') reqPath = '/work.html';
 
   const filePath = path.join(root, reqPath);
   if (!filePath.startsWith(root)) {

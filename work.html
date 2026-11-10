@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My work | Ruchin Dwivedi</title>
+<meta name="description" content="Eight projects by Ruchin Dwivedi: apps and AI agents in production, AI roadmaps and business cases for enterprises, and the workflows and frameworks behind them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&family=Kalam:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF; --ink:#15171A; --muted:#5B5F66; --stone:#E6E4DF; --stone-soft:#F5F4F1; --stone-faint:#D9D6CF;
+  --accent:#E05A2B; --accent-deep:#B33F17; --accent-tint:#FCE9E1; --accent-wash:#FFF5F0;
+  --display:'Bricolage Grotesque', 'DM Sans', system-ui, sans-serif;
+  --sans:'DM Sans', system-ui, -apple-system, sans-serif;
+  --hand:'Kalam', 'Comic Sans MS', cursive;
+  --nav-h:72px; --max:1180px;
+  --ease:cubic-bezier(.22,.8,.3,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --sh-1:0 1px 2px rgba(21,23,26,.06);
+  --sh-2:0 12px 32px rgba(21,23,26,.10);
+  --sh-3:0 2px 4px rgba(21,23,26,.04), 0 24px 48px -16px rgba(179,63,23,.25);
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html{scroll-behavior:smooth; scroll-padding-top:var(--nav-h)}
+body{font-family:var(--sans); font-size:16px; line-height:1.5; color:var(--ink); background:var(--white); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+img{display:block; max-width:100%}
+a{color:inherit}
+button{font-family:inherit}
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{outline:3px solid var(--accent); outline-offset:3px}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ---------- primitives ---------- */
+.inner{width:100%; max-width:var(--max); margin:0 auto; padding:80px 24px}
+.fold{display:flex; flex-direction:column; justify-content:center; min-height:calc(100svh - var(--nav-h))}
+.h-display{font-family:var(--display); font-weight:800; letter-spacing:-.035em; line-height:.98}
+.hand{font-family:var(--hand); font-weight:700; color:var(--accent); white-space:nowrap; letter-spacing:0}
+.btn{position:relative; isolation:isolate; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer; text-decoration:none; border-radius:999px;
+  font:600 15px/1.5 var(--sans); padding:11px 20px; transition:transform .2s var(--ease)}
+.btn::after{content:""; position:absolute; inset:0; border-radius:inherit; z-index:-1; opacity:0; transition:opacity .2s var(--ease)}
+.btn:hover{transform:translateY(-1px)}
+.btn:hover::after{opacity:1}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn-accent{background:var(--accent); color:#fff}
+.btn-accent::after{background:var(--accent-deep)}
+.btn-outline{background:var(--white); color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink); padding:13px 24px; font-size:16px}
+.btn-outline::after{background:var(--accent-wash)}
+.btn-lg{padding:14px 24px; font-size:16px}
+.btn-sm{padding:11px 22px; font-size:15px}
+.fade{animation:fade-in .7s var(--ease) both}
+@keyframes fade-in{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+@keyframes wipe{from{transform:scaleX(1)} to{transform:scaleX(0)}}
+.rv{opacity:0; transform:translateY(14px); transition:opacity .6s var(--ease) var(--rvd,0s), transform .7s var(--ease) var(--rvd,0s)}
+.rv.in{opacity:1; transform:none}
+
+/* ---------- nav ---------- */
+.nav{position:sticky; top:0; z-index:50; height:var(--nav-h); background:rgba(255,255,255,.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--stone)}
+.nav .inner{height:100%; padding:0 24px; display:flex; align-items:center; justify-content:space-between}
+.brand{font-family:var(--display); font-weight:800; font-size:19px; letter-spacing:-.02em; text-decoration:none; border-radius:6px}
+.nav-links{display:flex; align-items:center; gap:32px}
+.nav-link{font-weight:500; font-size:15px; color:var(--muted); text-decoration:none; border-radius:6px; transition:transform .2s var(--ease), opacity .2s}
+.nav-link:hover{transform:translateY(-1px); color:var(--ink)}
+.nav-link:active{transform:translateY(0)}
+.nav-link.is-active{color:var(--ink); text-decoration:underline; text-decoration-color:var(--accent); text-decoration-thickness:2px; text-underline-offset:7px}
+@media (max-width:760px){ .nav-link{display:none} }
+
+/* ---------- page header ---------- */
+.work-head{width:100%; max-width:var(--max); margin:0 auto; padding:48px 24px 32px}
+.work-head h1{font-size:72px; line-height:1; letter-spacing:-.04em}
+.work-sub{margin-top:18px; font-weight:600; font-size:28px; line-height:1.3; letter-spacing:-.01em; color:var(--muted)}
+.rot, .rot-measure{display:inline-block; white-space:nowrap; font:700 44px/1 var(--hand); color:var(--accent); letter-spacing:0; padding:.14em .1em .14em .03em; margin:-.14em 6px -.14em -.03em}
+.rot{position:relative; vertical-align:baseline; clip-path:inset(0)} /* clip-path, not overflow:hidden, so the word keeps its text baseline */
+.rot.live{transition:width .5s var(--ease)}
+.rot-cover{position:absolute; inset:0; background:var(--white); transform-origin:right center; transform:scaleX(0)}
+.rot-cover.go{animation:wipe .9s cubic-bezier(.45,.05,.55,.95) both}
+.rot-measure{position:absolute; left:-9999px; top:0; visibility:hidden}
+
+/* ---------- tabs ---------- */
+.work-body{width:100%; max-width:var(--max); margin:0 auto; padding:0 24px 120px; display:flex; flex-direction:column; gap:40px}
+.tabs{position:relative; display:flex; align-items:stretch; gap:36px; height:48px; border-bottom:1px solid var(--stone)}
+.tab{background:none; border:0; padding:0; cursor:pointer; font:600 16px/1.5 var(--sans); color:var(--muted); white-space:nowrap; border-radius:4px}
+.tab:hover, .tab[aria-selected=true]{color:var(--ink)}
+.tab .n{margin-right:6px; font-variant-numeric:tabular-nums}
+.tab[aria-selected=true] .n{color:var(--accent)}
+.tab-ink{position:absolute; left:0; bottom:-1px; width:100px; height:2px; border-radius:2px; background:var(--accent); transform-origin:left center; transform:scaleX(0)}
+.tab-ink.live{transition:transform .3s var(--ease)}
+
+/* ---------- desktop: list + detail ---------- */
+.wgrid{display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr); gap:56px; align-items:stretch}
+.wlist-col{position:relative}
+.wlist{position:absolute; inset:0; display:flex; flex-direction:column; overflow:hidden; border-radius:24px; border:1px solid var(--stone); background:var(--white); box-shadow:var(--sh-1)}
+.wcount{display:flex; align-items:baseline; gap:8px; padding:28px 24px 12px}
+.wcount b{font-family:var(--display); font-weight:800; font-size:56px; line-height:1; letter-spacing:-.04em; color:var(--stone-faint)}
+.wcount span{font-weight:500; font-size:20px; color:var(--muted)}
+.wscroll{position:relative; flex:1; display:flex; flex-direction:column; gap:4px; overflow-y:auto; padding:0 20px 24px}
+.witem{position:relative; isolation:isolate; display:flex; align-items:center; justify-content:space-between; gap:12px; flex:none; width:100%; padding:16px; text-align:left;
+  background:none; border:0; border-left:3px solid var(--stone); border-radius:0 12px 12px 0; cursor:pointer; color:inherit; transition:transform .2s var(--ease)}
+.witem::before{content:""; position:absolute; inset:0; border-radius:inherit; background:var(--accent-wash); opacity:0; z-index:-1; transition:opacity .15s var(--ease)}
+.witem:hover::before{opacity:1}
+.witem:active{transform:scale(.99)}
+.witem[aria-pressed=true]{border-left-color:var(--accent)}
+.witem .t{display:flex; flex-direction:column; gap:4px}
+.witem .t b{font-weight:700; font-size:17px; line-height:1.3; color:var(--muted)}
+.witem[aria-pressed=true] .t b{color:var(--ink)}
+.witem .t small{font-weight:500; font-size:12px; line-height:1.3; color:var(--muted)}
+.witem .arrow{font-size:20px; line-height:1; color:var(--accent); opacity:0; transition:opacity .15s var(--ease)}
+.witem[aria-pressed=true] .arrow{opacity:1}
+.wfade{pointer-events:none; position:absolute; left:0; right:0; bottom:0; height:64px; border-radius:0 0 24px 24px; background:linear-gradient(to top, var(--white), rgba(255,255,255,0)); transition:opacity .15s var(--ease)}
+.wdetail{display:flex; flex-direction:column; gap:22px; min-height:520px; padding:40px; border-radius:24px; background:var(--stone-soft)}
+@media (min-width:1024px){ .wdetail{padding:48px} }
+.wdetail-in{display:flex; flex-direction:column; gap:22px}
+.wdetail-in.anim{animation:fade-in .3s var(--ease) both}
+.client{align-self:flex-start; border-radius:999px; padding:6px 14px; background:var(--white); font-weight:600; font-size:14px; line-height:1.4; color:var(--ink)}
+.lede{font-family:var(--display); font-weight:800; font-size:48px; line-height:1.08; letter-spacing:-.03em; color:var(--accent-deep)}
+@media (max-width:1023px){ .lede{font-size:40px} }
+.wdetail-body{display:flex; flex-direction:column; gap:22px}
+.wdetail-body p:not(.lede){max-width:560px; font-size:18px; line-height:1.65; color:var(--muted)}
+.tags{list-style:none; display:flex; flex-wrap:wrap; gap:8px}
+.tags li{display:inline-flex; border-radius:999px; padding:7px 14px; font-weight:600; font-size:14px; line-height:1.3; color:var(--accent-deep); background:var(--accent-tint)}
+.wnext{margin-top:auto; display:flex; justify-content:flex-end}
+
+/* ---------- mobile: accordion ---------- */
+.acc{list-style:none; border-top:1px solid var(--stone)}
+.acc[hidden]{display:none}
+.acc > li{border-bottom:1px solid var(--stone); scroll-margin-top:calc(var(--nav-h) + 12px)}
+.acc-h{font:inherit}
+.acc-btn{display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding:18px 0; background:none; border:0; text-align:left; cursor:pointer; color:inherit; border-radius:6px}
+.acc-btn .t{display:flex; flex-direction:column; gap:3px}
+.acc-btn small{font-weight:500; font-size:12px; line-height:1.3; color:var(--muted)}
+.acc-btn b{font-weight:700; font-size:18px; line-height:1.3; color:var(--muted)}
+.acc-btn[aria-expanded=true] b{color:var(--ink)}
+.acc-ico{display:inline-grid; place-items:center; flex:none; width:34px; height:34px; border-radius:50%; box-shadow:inset 0 0 0 1.5px var(--stone); font-size:17px; line-height:1; color:var(--ink); transition:transform .2s var(--spring)}
+.acc-ico::before{content:"+"}
+.acc-btn:active .acc-ico{transform:scale(.92)}
+.acc-btn[aria-expanded=true] .acc-ico{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.acc-btn[aria-expanded=true] .acc-ico::before{content:"−"}
+.acc-panel{display:flex; flex-direction:column; gap:12px; margin-bottom:18px; padding:20px; border-radius:16px; background:var(--stone-soft)}
+.acc-panel[hidden]{display:none}
+.acc-panel.anim{animation:fade-in .3s var(--ease) both}
+.acc-panel .lede{font-size:26px; line-height:1.15; letter-spacing:-.02em}
+.acc-panel p:not(.lede){font-size:15px; line-height:1.6; color:var(--muted)}
+.acc-panel .tags{gap:6px}
+.acc-panel .tags li{padding:5px 11px; font-size:12px}
+
+@media (min-width:768px){ .acc{display:none !important} }
+@media (max-width:767px){
+  .work-head{padding:32px 20px 28px}
+  .work-head h1{font-size:44px}
+  .work-sub{margin-top:12px; font-size:20px}
+  .rot, .rot-measure{font-size:32px}
+  .work-body{padding:0 20px 64px; gap:20px}
+  .tabs{height:44px; gap:12px; overflow-x:auto; scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{font-size:12.5px}
+  .tab .n{margin-right:4px}
+  .tab-ink{bottom:0}
+  .wgrid{display:none}
+}
+/* without JS: show every group fully opened, hide the empty desktop grid */
+html.no-js .wgrid{display:none}
+html.no-js .acc, html.no-js .acc[hidden]{display:block !important}
+html.no-js .acc-panel[hidden]{display:flex}
+html.no-js .rot-cover{display:none}
+html.no-js .rv{opacity:1; transform:none}
+
+/* ---------- contact ---------- */
+.contact{background:var(--stone-soft)}
+.contact .inner{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:64px; align-items:center}
+.contact h2{font-size:clamp(40px, 4.2vw, 56px)}
+.contact h2 .hand{font-size:1.15em}
+.contact .lead{margin-top:20px; font-size:17px; line-height:1.65; color:var(--muted); max-width:36ch}
+.contact .actions{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:32px}
+.mail{font-weight:500; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--stone-faint); display:inline-block; transition:transform .2s var(--ease)}
+.mail:hover{transform:translateY(-1px); color:var(--ink)}
+.form{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:40px; border-radius:24px; background:var(--white); border:1px solid var(--stone); box-shadow:var(--sh-1)}
+.field{display:flex; flex-direction:column; gap:6px}
+.field.full{grid-column:1 / -1}
+.field label{font-weight:600; font-size:14px}
+.field input, .field textarea{font:400 16px/1.5 var(--sans); color:var(--ink); background:var(--white); border:1px solid var(--stone); border-radius:12px; padding:12px 14px; width:100%}
+.field textarea{min-height:120px; resize:vertical}
+.form .btn{justify-self:start}
+.sent{display:none; padding:40px; border-radius:24px; background:var(--white); border:1px solid var(--stone)}
+.sent h3{font-family:var(--display); font-weight:700; font-size:28px; letter-spacing:-.02em; margin-bottom:10px}
+.sent p{color:var(--muted); line-height:1.6}
+.is-sent .form{display:none}
+.is-sent .sent{display:block}
+@media (max-width:959px){ .contact .inner{grid-template-columns:1fr; gap:36px} .form{grid-template-columns:1fr; padding:22px 18px} }
+
+/* ---------- footer ---------- */
+.footer{border-top:1px solid var(--stone)}
+.footer .inner{padding:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:14px; color:var(--muted)}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .rv, .rot.live, .tab-ink.live{transition-duration:.01s !important; transition-delay:0s !important}
+  .fade, .rot-cover.go, .wdetail-in.anim, .acc-panel.anim{animation:none !important}
+  .rv{opacity:1; transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="inner">
+    <a class="brand" href="/">Ruchin Dwivedi</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/#what">What I do</a>
+      <a class="nav-link is-active" href="/work" aria-current="page">Work</a>
+      <a class="nav-link" href="/#about">About</a>
+      <a class="btn btn-accent" href="#contact">Let’s talk</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+<header class="work-head">
+  <h1 class="h-display fade">My work</h1>
+  <p class="work-sub fade" style="animation-delay:.1s">
+    <span class="sr">Apps, AI agents, roadmaps and workflows that paid off</span>
+    <span aria-hidden="true"><span class="rot" id="rot"><span class="rot-text">Apps</span><span class="rot-cover"></span></span>that paid off</span>
+  </p>
+  <span class="rot-measure" id="rot-measure" aria-hidden="true"></span>
+</header>
+
+<section class="work-body" aria-label="Projects">
+  <div class="tabs rv" role="tablist" aria-label="Project types" style="--rvd:.15s">
+    <button class="tab" type="button" role="tab" id="tab-apps" aria-selected="true" aria-controls="group-apps"><span class="n">3</span>Apps &amp; agents</button>
+    <button class="tab" type="button" role="tab" id="tab-strategy" aria-selected="false" aria-controls="group-strategy" tabindex="-1"><span class="n">4</span>AI strategy</button>
+    <button class="tab" type="button" role="tab" id="tab-process" aria-selected="false" aria-controls="group-process" tabindex="-1"><span class="n">2</span>Process &amp; value</button>
+    <span class="tab-ink" aria-hidden="true"></span>
+  </div>
+
+  <!-- desktop: list on the left, detail on the right (filled from the accordions below) -->
+  <div class="wgrid rv" style="--rvd:.25s">
+    <div class="wlist-col">
+      <div class="wlist">
+        <div class="wcount" aria-hidden="true"><b id="wcount-n">01</b><span id="wcount-t">/ 02</span></div>
+        <div class="wscroll" id="wscroll" aria-label="Projects in this group"></div>
+        <div class="wfade" id="wfade" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="wdetail" id="wdetail">
+      <div class="wdetail-in" id="wdetail-in">
+        <span class="client" id="wclient"></span>
+        <div class="wdetail-body" id="wdetail-body"></div>
+      </div>
+      <div class="wnext"><button class="btn btn-outline btn-sm" type="button" id="wnext"></button></div>
+    </div>
+  </div>
+
+  <!-- the projects themselves, as a mobile accordion -->
+  <ul class="acc" id="group-apps" role="tabpanel" aria-labelledby="tab-apps">
+    <li id="rxfield" data-client="Zylomed Healthcare">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p-rxfield"><span class="t"><small>01 · Zylomed Healthcare</small><b>RxField, a field sales app</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-rxfield">
+        <p class="lede">Gave a 50+ person sales team back 10+ hours a week</p>
+        <p>RxField replaced spreadsheet-based tracking and manual finance work for a pharma field sales team of 50+ users. Six Azure AI Foundry agents now handle invoice matching, reconciliations and payment follow-ups.</p>
+        <ul class="tags"><li>React Native</li><li>Supabase</li><li>Azure AI Foundry</li><li>F&amp;A automation</li></ul>
+      </div>
+    </li>
+    <li id="ekostay" data-client="EKOSTAY">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p-ekostay"><span class="t"><small>02 · EKOSTAY</small><b>Villa operations app</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-ekostay" hidden>
+        <p class="lede">Guest reviews turned into tasks across 150+ villas</p>
+        <p>AI agents in EKOS, the operations app for Ekostay’s 150+ villas, turn guest reviews into maintenance tasks using LLM classification and embedding-based matching, then allocate them by villa and role.</p>
+        <p>Also built caretaker onboarding with CRM API integration and Google Workspace credential emails, plus face-verified attendance using AWS Rekognition and GPS geofencing.</p>
+        <ul class="tags"><li>Agentic AI</li><li>LLM classification</li><li>AWS Rekognition</li></ul>
+      </div>
+    </li>
+    <li id="screening" data-client="International recruitment agency">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p-screening"><span class="t"><small>03 · International recruitment agency</small><b>Candidate screening tool</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-screening" hidden>
+        <p class="lede">Manual candidate screening replaced by a matching tool</p>
+        <p>The tool checks work-permit eligibility across Denmark, Norway, Sweden and Germany and shortlists candidates against each employer’s job order, with GDPR governance built in.</p>
+        <ul class="tags"><li>AI matching</li><li>GDPR</li><li>Recruitment</li></ul>
+      </div>
+    </li>
+  </ul>
+
+  <ul class="acc" id="group-strategy" role="tabpanel" aria-labelledby="tab-strategy" hidden>
+    <li id="bank" data-client="Global bank">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p-bank"><span class="t"><small>01 · Global bank</small><b>Board-ready AI roadmap</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-bank">
+        <p class="lede">From 40+ use cases to an 18-month phased AI roadmap</p>
+        <p>For a global bank deciding where to invest in AI and automation, assessed 40+ use cases across marketing, customer support and HR, and built business cases for the 16 priorities. Leadership sponsored an 18-month phased roadmap.</p>
+        <ul class="tags"><li>Use-case prioritisation</li><li>Business cases</li><li>C-suite advisory</li></ul>
+      </div>
+    </li>
+    <li id="gcc" data-client="Indonesia-based GCC">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p-gcc"><span class="t"><small>02 · Indonesia-based GCC</small><b>Agentic AI in finance</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-gcc" hidden>
+        <p class="lede">15+ finance processes ranked by value and AI readiness</p>
+        <p>For a global capability centre exploring agentic AI in finance, brought business, IT and third-party vendors together to prioritise 15+ F&amp;A processes by value potential against AI readiness, then developed and executed the implementation plan.</p>
+        <ul class="tags"><li>Agentic AI</li><li>F&amp;A processes</li><li>Implementation planning</li></ul>
+      </div>
+    </li>
+    <li id="maturity" data-client="Global enterprises">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p-maturity"><span class="t"><small>03 · Global enterprises</small><b>AI maturity assessments</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-maturity" hidden>
+        <p class="lede">5+ maturity assessments and 10+ strategy playbooks</p>
+        <p>As Data &amp; AI strategy consultant for Everest Group’s top clients, delivered AI maturity assessments, strategy playbooks, technology vendor assessments and battlecards built on competitive benchmarking.</p>
+        <ul class="tags"><li>AI maturity assessment</li><li>Vendor assessment</li><li>Competitive benchmarking</li></ul>
+      </div>
+    </li>
+    <li id="due-diligence" data-client="Private-equity investor">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p-due-diligence"><span class="t"><small>04 · Private-equity investor</small><b>Agentic AI due diligence</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-due-diligence" hidden>
+        <p class="lede">Showed ~80% of AI citations go to .com domains</p>
+        <p>For a private-equity client asking whether LLM search and AI agents threaten demand for .com domains, led the AI-impact workstream. The finding shaped the investment thesis.</p>
+        <ul class="tags"><li>Commercial due diligence</li><li>Agentic AI</li><li>Investment thesis</li></ul>
+      </div>
+    </li>
+  </ul>
+
+  <ul class="acc" id="group-process" role="tabpanel" aria-labelledby="tab-process" hidden>
+    <li id="tva" data-client="Everest Group">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p-tva"><span class="t"><small>01 · Everest Group</small><b>Total Value Added framework</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-tva">
+        <p class="lede">A reusable framework that made AI value measurable</p>
+        <p>Designed and pitched a framework for value realisation and ROI that informed investment decisions at a c. $2bn-revenue client. Since commercialised for 5+ technology providers, including UiPath and Tungsten Automation.</p>
+        <ul class="tags"><li>TVA framework</li><li>ROI modelling</li><li>Value realisation</li></ul>
+      </div>
+    </li>
+    <li id="payments" data-client="Global payments provider">
+      <h2 class="acc-h"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p-payments"><span class="t"><small>02 · Global payments provider</small><b>25+ workflows reengineered</b></span><span class="acc-ico" aria-hidden="true"></span></button></h2>
+      <div class="acc-panel" id="p-payments" hidden>
+        <p class="lede">User complaints down 30%+ across 25+ workflows</p>
+        <p>As product owner for a workplace transport application, led 25+ workflow optimisations from scoping to rollout, mapping processes in Appian and aligning business leaders, CIOs and vendors through bi-monthly SteerCos.</p>
+        <p>Excel and Power BI dashboards gave leadership one view of delivery and informed 10+ product enhancements.</p>
+        <ul class="tags"><li>Product ownership</li><li>Appian</li><li>Power BI</li></ul>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<section class="contact fold" id="contact">
+  <div class="inner">
+    <div class="rv">
+      <h2 class="h-display">Want something like this <span class="hand">for your team</span>?</h2>
+      <p class="lead">Open to AI adoption and transformation roles, and to freelance builds. Either way, let’s start with the problem.</p>
+      <div class="actions">
+        <a class="btn btn-outline" href="https://www.linkedin.com/in/ruchin-dwivedi/" target="_blank" rel="noopener">Connect on LinkedIn ↗</a>
+        <a class="mail" href="mailto:ruchindwd@gmail.com">ruchindwd@gmail.com</a>
+      </div>
+    </div>
+    <div class="rv" style="--rvd:.1s" id="contact-box">
+      <form class="form" name="contact" method="POST" action="/work?sent=1#contact" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact">
+        <p class="sr" aria-hidden="true"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field full"><label for="f-msg">What would you like help with?</label><textarea id="f-msg" name="message" required></textarea></div>
+        <button class="btn btn-accent btn-lg" type="submit">Let’s get in touch</button>
+      </form>
+      <div class="sent" role="status">
+        <h3>Thanks, got it.</h3>
+        <p>I read everything myself and usually reply within a day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="inner"><span>© 2026 Ruchin Dwivedi</span><span>Copenhagen, Denmark</span></div>
+</footer>
+
+<script>
+(() => {
+  document.documentElement.classList.remove('no-js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (id) => document.getElementById(id);
+  const pad = (n) => String(n).padStart(2, '0');
+
+  /* ---------- the handwritten word that rewrites itself ---------- */
+  const WORDS = ['Apps', 'AI agents', 'Roadmaps', 'Workflows'];
+  const rot = $('rot'), rotText = rot.querySelector('.rot-text'), cover = rot.querySelector('.rot-cover'), meas = $('rot-measure');
+  let wi = 0;
+  const showWord = (w, write) => {
+    meas.textContent = w;
+    rot.style.width = meas.offsetWidth + 'px';
+    rotText.textContent = w;
+    if (!write || reduce) return;
+    cover.classList.remove('go'); void cover.offsetWidth; cover.classList.add('go');
+  };
+  document.fonts.ready.then(() => {
+    showWord(WORDS[0], true);
+    requestAnimationFrame(() => rot.classList.add('live'));
+    if (reduce) return;
+    setInterval(() => { if (document.hidden) return; wi = (wi + 1) % WORDS.length; showWord(WORDS[wi], true); }, 2400);
+  });
+  addEventListener('resize', () => showWord(WORDS[wi], false));
+
+  /* ---------- groups, tabs, list and detail ---------- */
+  const groups = [...document.querySelectorAll('.acc')];
+  const tabs = [...document.querySelectorAll('.tab')];
+  const ink = document.querySelector('.tab-ink');
+  const list = $('wscroll'), fade = $('wfade'), countN = $('wcount-n'), countT = $('wcount-t');
+  const detailIn = $('wdetail-in'), client = $('wclient'), body = $('wdetail-body'), nextBtn = $('wnext');
+  const items = (gi) => [...groups[gi].querySelectorAll(':scope > li')];
+  const titleOf = (li) => li.querySelector('.acc-btn b').textContent;
+  let g = 0, idx = 0, collapsed = false;
+
+  tabs.forEach((t, i) => { t.querySelector('.n').textContent = items(i).length; });
+
+  const placeInk = () => { const t = tabs[g]; ink.style.transform = `translateX(${t.offsetLeft}px) scaleX(${t.offsetWidth / 100})`; };
+  const updateFade = () => { fade.style.opacity = list.scrollHeight - list.clientHeight - list.scrollTop > 2 ? 1 : 0; };
+  const nextTarget = () => idx + 1 < items(g).length ? {g, i: idx + 1} : {g: (g + 1) % groups.length, i: 0};
+
+  function renderList(){
+    list.replaceChildren();
+    items(g).forEach((li, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'witem'; b.setAttribute('aria-pressed', String(i === idx)); b.setAttribute('aria-controls', 'wdetail');
+      const t = document.createElement('span'); t.className = 't';
+      const ti = document.createElement('b'); ti.textContent = titleOf(li);
+      const meta = document.createElement('small'); meta.textContent = li.querySelector('.acc-btn small').textContent;
+      t.append(ti, meta);
+      const arrow = document.createElement('span'); arrow.className = 'arrow'; arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '→';
+      b.append(t, arrow);
+      b.addEventListener('click', () => select(g, i, true));
+      list.appendChild(b);
+    });
+    countT.textContent = '/ ' + pad(items(g).length);
+    updateFade();
+  }
+
+  function renderDetail(animate){
+    const li = items(g)[idx];
+    client.textContent = li.dataset.client;
+    body.replaceChildren(...[...li.querySelector('.acc-panel').children].map(n => n.cloneNode(true)));
+    countN.textContent = pad(idx + 1);
+    const n = nextTarget();
+    nextBtn.textContent = 'Next: ' + titleOf(items(n.g)[n.i]) + ' →';
+    if (animate && !reduce){ detailIn.classList.remove('anim'); void detailIn.offsetWidth; detailIn.classList.add('anim'); }
+  }
+
+  function syncAccordion(animate){
+    groups.forEach((ul, gi) => {
+      ul.hidden = gi !== g;
+      items(gi).forEach((li, i) => {
+        const open = gi === g && i === idx && !collapsed;
+        const btn = li.querySelector('.acc-btn'), panel = li.querySelector('.acc-panel');
+        btn.setAttribute('aria-expanded', String(open));
+        panel.hidden = !open;
+        if (open && animate && !reduce){ panel.classList.remove('anim'); void panel.offsetWidth; panel.classList.add('anim'); }
+      });
+    });
+  }
+
+  function syncTabs(){
+    tabs.forEach((t, i) => { t.setAttribute('aria-selected', String(i === g)); t.tabIndex = i === g ? 0 : -1; });
+    placeInk();
+  }
+
+  function select(gi, i, byUser){
+    const sameGroup = gi === g;
+    g = gi; idx = i; collapsed = false;
+    syncTabs();
+    if (!sameGroup || !list.children.length) renderList();
+    else [...list.children].forEach((b, k) => b.setAttribute('aria-pressed', String(k === idx)));
+    renderDetail(byUser);
+    syncAccordion(byUser);
+    // keep the chosen row visible inside the scrolling list
+    const row = list.children[idx];
+    if (row){
+      const top = row.offsetTop - list.offsetTop, bottom = top + row.offsetHeight;
+      if (top < list.scrollTop) list.scrollTo({top: top - 8, behavior: reduce ? 'auto' : 'smooth'});
+      else if (bottom > list.scrollTop + list.clientHeight) list.scrollTo({top: bottom - list.clientHeight + 8, behavior: reduce ? 'auto' : 'smooth'});
+    }
+    if (byUser) history.replaceState(null, '', '#' + items(g)[idx].id);
+  }
+
+  // tabs: click, and arrow keys
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(i, 0, true));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      const n = (i + d + tabs.length) % tabs.length;
+      tabs[n].focus(); select(n, 0, true);
+    });
+  });
+
+  // mobile accordion: open one, or fold the open one back up
+  groups.forEach((ul, gi) => items(gi).forEach((li, i) => {
+    li.querySelector('.acc-btn').addEventListener('click', () => {
+      if (gi === g && i === idx && !collapsed){ collapsed = true; syncAccordion(false); return; }
+      select(gi, i, true);
+    });
+  }));
+
+  nextBtn.addEventListener('click', () => { const n = nextTarget(); select(n.g, n.i, true); });
+  list.addEventListener('scroll', updateFade, {passive: true});
+  addEventListener('resize', () => { placeInk(); updateFade(); });
+
+  // deep links: /work#ekostay opens that project in its group
+  const fromHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return false;
+    for (let gi = 0; gi < groups.length; gi++){
+      const i = items(gi).findIndex(li => li.id === id);
+      if (i >= 0){ select(gi, i, false); return items(gi)[i]; }
+    }
+    return false;
+  };
+  const landed = fromHash();
+  if (!landed) select(0, 0, false);
+  requestAnimationFrame(() => { ink.classList.add('live'); placeInk(); });
+  document.fonts.ready.then(placeInk);
+  addEventListener('hashchange', () => { const li = fromHash(); if (li && innerWidth < 768) li.scrollIntoView({block: 'start', behavior: reduce ? 'auto' : 'smooth'}); });
+  if (landed && innerWidth < 768) addEventListener('load', () => landed.scrollIntoView({block: 'start'}));
+
+  /* ---------- scroll reveal ---------- */
+  const rvs = [...document.querySelectorAll('.rv')];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold: .05});
+  rvs.forEach(el => io.observe(el));
+  const catchUp = () => rvs.forEach(el => { if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in'); });
+  catchUp(); addEventListener('load', catchUp);
+
+  // contact form: Netlify redirects back here with ?sent=1 after a submission
+  if (new URLSearchParams(location.search).get('sent') === '1'){
+    $('contact-box').classList.add('is-sent');
+  }
+})();
+</script>
+</body>
+</html>
